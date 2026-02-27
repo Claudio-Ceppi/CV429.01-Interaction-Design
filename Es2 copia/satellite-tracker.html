@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT TRACKER — LIVE ORBITAL MAP</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000005;
+    color: #00ff88;
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  #canvas-container {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+  }
+
+  canvas#three-canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* HUD overlay */
+  #hud {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  #header {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
+  #header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    color: #00ff88;
+    text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8855;
+  }
+
+  #header p {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: #00ff8877;
+    margin-top: 4px;
+  }
+
+  #stats {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 11px;
+    line-height: 1.8;
+    color: #00ff8899;
+    border-left: 1px solid #00ff8833;
+    padding-left: 12px;
+  }
+
+  #stats .val { color: #00ff88; font-weight: bold; }
+
+  #controls-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #00ff8855;
+    text-align: center;
+  }
+
+  #cam-panel {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 180px;
+    height: 135px;
+    border: 1px solid #00ff8844;
+    background: #00000099;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  #cam-panel video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+    transform: scaleX(-1);
+  }
+
+  #cam-label {
+    position: absolute;
+    top: 4px;
+    left: 6px;
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: #00ff8888;
+  }
+
+  #finger-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  #loading {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #000005;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    transition: opacity 0.8s;
+  }
+
+  #loading h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    letter-spacing: 6px;
+    color: #00ff88;
+    text-shadow: 0 0 20px #00ff88;
+  }
+
+  #loading-bar-bg {
+    width: 300px;
+    height: 2px;
+    background: #00ff8822;
+  }
+
+  #loading-bar {
+    height: 100%;
+    background: #00ff88;
+    width: 0%;
+    transition: width 0.3s;
+    box-shadow: 0 0 10px #00ff88;
+  }
+
+  #loading-msg {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #00ff8866;
+  }
+
+  .scanline {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,255,136,0.012) 2px,
+      rgba(0,255,136,0.012) 4px
+    );
+  }
+
+  #error-msg {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 200;
+    color: #ff4466;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    text-align: center;
+    background: #0a0005;
+    padding: 20px 30px;
+    border: 1px solid #ff446644;
+  }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <h2>SAT TRACKER</h2>
+  <div id="loading-bar-bg"><div id="loading-bar"></div></div>
+  <div id="loading-msg">INITIALIZING...</div>
+</div>
+
+<div class="scanline"></div>
+<div id="canvas-container"><canvas id="three-canvas"></canvas></div>
+<canvas id="finger-canvas"></canvas>
+
+<div id="hud">
+  <div id="header">
+    <h1>SAT TRACKER</h1>
+    <p>LIVE ORBITAL MAP — CELESTRAK NORAD</p>
+  </div>
+  <div id="stats">
+    <div>SATELLITES &nbsp;<span class="val" id="s-count">—</span></div>
+    <div>UTC TIME &nbsp;&nbsp;<span class="val" id="s-time">—</span></div>
+    <div>HAND &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="val" id="s-hand">NOT DETECTED</span></div>
+  </div>
+  <div id="controls-hint">DRAG TO ROTATE &nbsp;|&nbsp; SCROLL TO ZOOM &nbsp;|&nbsp; OPEN HAND TO SPIN</div>
+  <div id="cam-panel">
+    <video id="webcam-video" autoplay playsinline muted></video>
+    <div id="cam-label">HAND TRACKING</div>
+  </div>
+</div>
+
+<div id="error-msg" id="error-msg"></div>
+
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- satellite.js via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/satellite.js/4.1.3/satellite.min.js"></script>
+<!-- MediaPipe Hands -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+const EARTH_RADIUS = 1.0;          // scene units
+const SAT_ALTITUDE_SCALE = 0.0001; // km → scene units extra radius
+const MAX_SATS = 800;              // limit for performance
+const TLE_URL = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle';
+const PROXY_URLS = [
+  `https://api.allorigins.win/raw?url=${encodeURIComponent(TLE_URL)}`,
+  `https://corsproxy.io/?${encodeURIComponent(TLE_URL)}`
+];
+
+// ─── GLOBALS ─────────────────────────────────────────────────────────────────
+let scene, camera, renderer, earthMesh, earthGroup, starField;
+let satellites = [];        // [{name, satrec, mesh, label}]
+let isDragging = false;
+let prevMouse = {x:0,y:0};
+let targetRotX = 0, targetRotY = 0;
+let currentRotX = 0, currentRotY = 0;
+let handRotX = 0, handRotY = 0;
+let prevPalmX = null, prevPalmY = null;
+let handActive = false;
+
+// ─── LOADING ─────────────────────────────────────────────────────────────────
+function setProgress(pct, msg) {
+  document.getElementById('loading-bar').style.width = pct + '%';
+  document.getElementById('loading-msg').textContent = msg;
+}
+
+// ─── SCENE SETUP ─────────────────────────────────────────────────────────────
+function initScene() {
+  scene = new THREE.Scene();
+
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.01, 1000);
+  camera.position.set(0, 0, 3.5);
+
+  renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('three-canvas'),
+    antialias: true,
+    alpha: false
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000005, 1);
+
+  // Stars
+  const starGeo = new THREE.BufferGeometry();
+  const starVerts = [];
+  for (let i = 0; i < 6000; i++) {
+    const r = 300 + Math.random() * 200;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    starVerts.push(
+      r * Math.sin(phi) * Math.cos(theta),
+      r * Math.sin(phi) * Math.sin(theta),
+      r * Math.cos(phi)
+    );
+  }
+  starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
+  starField = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.4, sizeAttenuation: true}));
+  scene.add(starField);
+
+  // Lights — sun as directional, very slight ambient so night side isn't pitch black
+  const ambient = new THREE.AmbientLight(0x111133, 0.4);
+  scene.add(ambient);
+  const sunLight = new THREE.DirectionalLight(0xfff5e0, 1.8);
+  sunLight.position.set(6, 2, 4);
+  scene.add(sunLight);
+  // Soft fill from opposite side (earthshine effect)
+  const fillLight = new THREE.DirectionalLight(0x001133, 0.15);
+  fillLight.position.set(-5, -1, -3);
+  scene.add(fillLight);
+
+  // Earth group (satellites are children so they rotate together)
+  earthGroup = new THREE.Group();
+  scene.add(earthGroup);
+
+  // Earth sphere — high detail
+  const earthGeo = new THREE.SphereGeometry(EARTH_RADIUS, 96, 96);
+
+  // Load real NASA textures from public CDN
+  const texLoader = new THREE.TextureLoader();
+  texLoader.crossOrigin = 'anonymous';
+
+  // Primary color map — NASA Blue Marble (8192×4096 via public tile server)
+  // Using a reliable public mirror at a manageable resolution
+  const earthColorTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg',
+    () => { /* loaded */ },
+    undefined,
+    () => {
+      // fallback to another source
+      earthColorTex.image = null;
+    }
+  );
+
+  // Bump/elevation map for mountain relief
+  const earthBumpTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/elev_bump_4k.jpg'
+  );
+
+  // Specular/water mask — white=water (shiny), black=land (matte)
+  const earthSpecTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/water_4k.png'
+  );
+
+  // Night lights (emissive) — cities glow on dark side
+  const earthNightTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/fair_clouds_4k.png'
+  );
+
+  const earthMat = new THREE.MeshPhongMaterial({
+    map: earthColorTex,
+    bumpMap: earthBumpTex,
+    bumpScale: 0.015,
+    specularMap: earthSpecTex,
+    specular: new THREE.Color(0x4499cc),
+    shininess: 60,
+    emissiveMap: earthNightTex,
+    emissive: new THREE.Color(0xffd090),
+    emissiveIntensity: 0.08
+  });
+  earthMesh = new THREE.Mesh(earthGeo, earthMat);
+  earthGroup.add(earthMesh);
+
+  // Cloud layer — semi-transparent sphere slightly above surface
+  const cloudsTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/fair_clouds_4k.png'
+  );
+  const cloudsMat = new THREE.MeshPhongMaterial({
+    map: cloudsTex,
+    transparent: true,
+    opacity: 0.38,
+    depthWrite: false
+  });
+  const cloudsMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(EARTH_RADIUS * 1.008, 64, 64),
+    cloudsMat
+  );
+  earthGroup.add(cloudsMesh);
+
+  // Slow cloud rotation stored for animation
+  window._cloudsMesh = cloudsMesh;
+
+  // Atmosphere glow — blue rim from behind
+  const atmMat = new THREE.MeshPhongMaterial({
+    color: 0x2255ff,
+    transparent: true,
+    opacity: 0.13,
+    side: THREE.BackSide
+  });
+  const atmMesh = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS * 1.055, 48, 48), atmMat);
+  earthGroup.add(atmMesh);
+
+  // Second inner glow for haze effect
+  const haze = new THREE.Mesh(
+    new THREE.SphereGeometry(EARTH_RADIUS * 1.02, 48, 48),
+    new THREE.MeshPhongMaterial({
+      color: 0x113377,
+      transparent: true,
+      opacity: 0.06,
+      side: THREE.BackSide
+    })
+  );
+  earthGroup.add(haze);
+
+  window.addEventListener('resize', onResize);
+  setupMouseControls();
+  setupWheelZoom();
+}
+
+function onResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+// ─── MOUSE CONTROLS ──────────────────────────────────────────────────────────
+function setupMouseControls() {
+  const el = renderer.domElement;
+  el.addEventListener('mousedown', e => { isDragging = true; prevMouse = {x: e.clientX, y: e.clientY}; });
+  window.addEventListener('mouseup', () => isDragging = false);
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - prevMouse.x;
+    const dy = e.clientY - prevMouse.y;
+    targetRotY += dx * 0.005;
+    targetRotX += dy * 0.005;
+    targetRotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotX));
+    prevMouse = {x: e.clientX, y: e.clientY};
+  });
+  // Touch
+  el.addEventListener('touchstart', e => { isDragging = true; prevMouse = {x: e.touches[0].clientX, y: e.touches[0].clientY}; });
+  window.addEventListener('touchend', () => isDragging = false);
+  window.addEventListener('touchmove', e => {
+    if (!isDragging || !e.touches[0]) return;
+    const dx = e.touches[0].clientX - prevMouse.x;
+    const dy = e.touches[0].clientY - prevMouse.y;
+    targetRotY += dx * 0.005;
+    targetRotX += dy * 0.005;
+    targetRotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotX));
+    prevMouse = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+  });
+}
+
+function setupWheelZoom() {
+  window.addEventListener('wheel', e => {
+    camera.position.z += e.deltaY * 0.002;
+    camera.position.z = Math.max(1.5, Math.min(8, camera.position.z));
+  });
+}
+
+// ─── TLE PARSING ─────────────────────────────────────────────────────────────
+function parseTLE(text) {
+  const lines = text.trim().split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  const result = [];
+  for (let i = 0; i < lines.length - 2; i++) {
+    if (!lines[i+1].startsWith('1 ') || !lines[i+2].startsWith('2 ')) continue;
+    const name = lines[i].replace(/^0 /, '').trim();
+    try {
+      const satrec = satellite.twoline2satrec(lines[i+1], lines[i+2]);
+      if (satrec && satrec.error === 0) {
+        result.push({ name, satrec });
+        i += 2;
+      }
+    } catch(e) {}
+  }
+  return result;
+}
+
+// ─── SATELLITE 3D ────────────────────────────────────────────────────────────
+function getEciKm(satrec, date) {
+  try {
+    const pv = satellite.propagate(satrec, date);
+    if (!pv || !pv.position || typeof pv.position.x !== 'number') return null;
+    return pv.position; // km in ECI
+  } catch(e) { return null; }
+}
+
+function eciToThree(posKm) {
+  // ECI: x=vernal equinox, z=north pole
+  // Three: y=up → remap z→y, x→x, y→-z
+  const scale = 1 / 6371; // normalize by earth radius so 1 unit = earth radius
+  return new THREE.Vector3(
+    posKm.x * scale,
+    posKm.z * scale,
+    -posKm.y * scale
+  );
+}
+
+function createSatObject(name) {
+  const group = new THREE.Group();
+
+  // Square marker
+  const geo = new THREE.PlaneGeometry(0.018, 0.018);
+  const mat = new THREE.MeshBasicMaterial({
+    color: 0x00ff88,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.9
+  });
+  const plane = new THREE.Mesh(geo, mat);
+  group.add(plane);
+
+  // Label sprite via canvas
+  const labelCanvas = document.createElement('canvas');
+  labelCanvas.width = 256; labelCanvas.height = 48;
+  const lctx = labelCanvas.getContext('2d');
+  lctx.font = 'bold 22px Share Tech Mono, monospace';
+  lctx.fillStyle = '#00ff88';
+  lctx.fillText(name.substring(0, 18), 4, 32);
+  const labelTex = new THREE.CanvasTexture(labelCanvas);
+  const labelMat = new THREE.SpriteMaterial({ map: labelTex, transparent: true, opacity: 0.75 });
+  const sprite = new THREE.Sprite(labelMat);
+  sprite.scale.set(0.18, 0.034, 1);
+  sprite.position.set(0.1, 0.01, 0);
+  group.add(sprite);
+
+  return { group, plane };
+}
+
+function buildSatellites(tleData) {
+  // Remove old
+  satellites.forEach(s => earthGroup.remove(s.group));
+  satellites = [];
+
+  const subset = tleData.slice(0, MAX_SATS);
+  const now = new Date();
+
+  subset.forEach(({name, satrec}) => {
+    const pos = getEciKm(satrec, now);
+    if (!pos) return;
+    const {group, plane} = createSatObject(name);
+    const v = eciToThree(pos);
+    group.position.copy(v);
+    earthGroup.add(group);
+    satellites.push({ satrec, group });
+  });
+
+  document.getElementById('s-count').textContent = satellites.length;
+}
+
+// ─── SATELLITE UPDATE ────────────────────────────────────────────────────────
+let lastSatUpdate = 0;
+function updateSatPositions(now) {
+  satellites.forEach(s => {
+    const pos = getEciKm(s.satrec, now);
+    if (!pos) return;
+    const v = eciToThree(pos);
+    s.group.position.copy(v);
+    // Always face camera (billboard)
+    s.group.quaternion.copy(camera.quaternion);
+  });
+}
+
+// ─── FINGER CANVAS ──────────────────────────────────────────────────────────
+const fingerCvs = document.getElementById('finger-canvas');
+fingerCvs.width = window.innerWidth;
+fingerCvs.height = window.innerHeight;
+const fctx = fingerCvs.getContext('2d');
+window.addEventListener('resize', () => {
+  fingerCvs.width = window.innerWidth;
+  fingerCvs.height = window.innerHeight;
+});
+
+function drawFingerDots(landmarks) {
+  fctx.clearRect(0, 0, fingerCvs.width, fingerCvs.height);
+  if (!landmarks) return;
+  // fingertip indices: 4,8,12,16,20
+  const tips = [4,8,12,16,20];
+  tips.forEach(idx => {
+    const lm = landmarks[idx];
+    // mirror x because video is mirrored
+    const x = (1 - lm.x) * fingerCvs.width;
+    const y = lm.y * fingerCvs.height;
+    fctx.beginPath();
+    fctx.arc(x, y, 8, 0, Math.PI*2);
+    fctx.fillStyle = '#ffffff';
+    fctx.shadowBlur = 15;
+    fctx.shadowColor = '#ffffff';
+    fctx.fill();
+    fctx.shadowBlur = 0;
+  });
+}
+
+// ─── HAND TRACKING ──────────────────────────────────────────────────────────
+async function initHandTracking() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+    const video = document.getElementById('webcam-video');
+    video.srcObject = stream;
+
+    const hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+    hands.setOptions({
+      maxNumHands: 1,
+      modelComplexity: 0,
+      minDetectionConfidence: 0.6,
+      minTrackingConfidence: 0.5
+    });
+
+    hands.onResults(results => {
+      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        const landmarks = results.multiHandLandmarks[0];
+        drawFingerDots(landmarks);
+
+        // Palm center = landmark 9 (middle finger base)
+        const palm = landmarks[9];
+        const px = 1 - palm.x; // mirrored
+        const py = palm.y;
+
+        if (prevPalmX !== null) {
+          const dx = px - prevPalmX;
+          const dy = py - prevPalmY;
+          // Check if hand is "open" — fingertips spread out
+          // Simple measure: distance between thumb tip (4) and pinky tip (20)
+          const thumb = landmarks[4];
+          const pinky = landmarks[20];
+          const spread = Math.hypot(thumb.x - pinky.x, thumb.y - pinky.y);
+          const isOpen = spread > 0.15;
+
+          if (isOpen) {
+            targetRotY += dx * 4;
+            targetRotX += dy * 4;
+            targetRotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotX));
+            document.getElementById('s-hand').textContent = 'OPEN — TRACKING';
+          } else {
+            document.getElementById('s-hand').textContent = 'CLOSED';
+          }
+        }
+        prevPalmX = px; prevPalmY = py;
+        handActive = true;
+      } else {
+        drawFingerDots(null);
+        prevPalmX = null; prevPalmY = null;
+        handActive = false;
+        document.getElementById('s-hand').textContent = 'NOT DETECTED';
+      }
+    });
+
+    const mpCamera = new Camera(video, {
+      onFrame: async () => { await hands.send({ image: video }); },
+      width: 640, height: 480
+    });
+    mpCamera.start();
+
+  } catch(e) {
+    console.warn('Hand tracking unavailable:', e);
+    document.getElementById('s-hand').textContent = 'CAM UNAVAILABLE';
+    document.getElementById('cam-panel').style.display = 'none';
+  }
+}
+
+// ─── FETCH TLE ───────────────────────────────────────────────────────────────
+async function fetchTLE() {
+  for (const url of PROXY_URLS) {
+    try {
+      setProgress(20, `FETCHING TLE DATA...`);
+      const resp = await fetch(url, { cache: 'no-store' });
+      if (!resp.ok) continue;
+      const text = await resp.text();
+      if (text.length < 100) continue;
+      return text;
+    } catch(e) { continue; }
+  }
+  throw new Error('All TLE sources failed');
+}
+
+// ─── ANIMATE ─────────────────────────────────────────────────────────────────
+function animate() {
+  requestAnimationFrame(animate);
+
+  const now = new Date();
+
+  // Smooth rotation
+  currentRotX += (targetRotX - currentRotX) * 0.08;
+  currentRotY += (targetRotY - currentRotY) * 0.08;
+  earthGroup.rotation.x = currentRotX;
+  earthGroup.rotation.y = currentRotY;
+
+  // Slowly rotate cloud layer independently
+  if (window._cloudsMesh) window._cloudsMesh.rotation.y += 0.00008;
+
+  // Update sat positions every 2s
+  const ts = now.getTime();
+  if (ts - lastSatUpdate > 2000) {
+    updateSatPositions(now);
+    lastSatUpdate = ts;
+  }
+
+  // HUD time
+  document.getElementById('s-time').textContent = now.toUTCString().slice(17, 25);
+
+  renderer.render(scene, camera);
+}
+
+// ─── MAIN ────────────────────────────────────────────────────────────────────
+(async () => {
+  try {
+    setProgress(5, 'INITIALIZING 3D ENGINE...');
+    initScene();
+
+    setProgress(30, 'FETCHING SATELLITE TLE DATA...');
+    let tleText;
+    try {
+      tleText = await fetchTLE();
+    } catch(e) {
+      // Use minimal fallback for demo
+      tleText = `ISS (ZARYA)\n1 25544U 98067A   24001.50000000  .00000000  00000-0  00000-0 0  9999\n2 25544  51.6416 247.4627 0006703 130.5360 325.0288 15.50377579000000`;
+      document.getElementById('error-msg').style.display = 'block';
+      document.getElementById('error-msg').textContent = 'CORS proxy unavailable. Showing demo data.\nOpen index.html via a local server or configure a CORS proxy.';
+      setTimeout(() => { document.getElementById('error-msg').style.display = 'none'; }, 5000);
+    }
+
+    setProgress(60, 'PARSING TLE DATA...');
+    const tleData = parseTLE(tleText);
+
+    setProgress(80, `BUILDING ${tleData.length} SATELLITE OBJECTS...`);
+    buildSatellites(tleData);
+
+    setProgress(90, 'STARTING HAND TRACKING...');
+    initHandTracking();
+
+    setProgress(100, 'READY');
+    await new Promise(r => setTimeout(r, 600));
+
+    const loadEl = document.getElementById('loading');
+    loadEl.style.opacity = '0';
+    setTimeout(() => loadEl.style.display = 'none', 800);
+
+    animate();
+
+  } catch(err) {
+    document.getElementById('loading-msg').textContent = 'ERROR: ' + err.message;
+    document.getElementById('loading-bar').style.background = '#ff4466';
+    console.error(err);
+  }
+})();
+</script>
+</body>
+</html>
