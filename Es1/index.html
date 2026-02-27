@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>ISS Tracker Minimal</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050505; overflow: hidden; }
+    #data {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      z-index: 9999;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #00ff41; /* Verde Matrix per visibilità */
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      border: 1px solid #00ff41;
+      pointer-events: none;
+    }
+    .label { color: #40339f; display: inline-block; width: 45px; }
+  </style>
+</head>
+<body>
+
+  <div id="data">
+    <div><span class="label">LAT</span> <span id="lat">--</span></div>
+    <div><span class="label">LON</span> <span id="lon">--</span></div>
+    <div><span class="label">VEL</span> <span id="vel">--</span></div>
+  </div>
+
+  <script>
+    let issLat = 0, issLon = 0, issVel = 0;
+    let issAngle = 0;
+
+    async function updateISS() {
+      try {
+        // Questa API è molto più precisa e veloce di Open-Notify
+        const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
+        const data = await res.json();
+        
+        issLat = data.latitude;
+        issLon = data.longitude;
+        issVel = data.velocity;
+
+        // Aggiorna i testi
+        document.getElementById('lat').textContent = (issLat >= 0 ? '+' : '') + issLat.toFixed(5) + '°';
+        document.getElementById('lon').textContent = (issLon >= 0 ? '+' : '') + issLon.toFixed(5) + '°';
+        document.getElementById('vel').textContent = Math.round(issVel).toLocaleString() + ' km/h';
+
+        // Sincronizza l'animazione p5.js con la longitudine reale
+        issAngle = (issLon * Math.PI) / 180;
+      } catch (e) {
+        console.error("Errore di sincronizzazione:", e);
+      }
+    }
+
+    // Aggiorna ogni 2 secondi per la massima precisione consentita
+    updateISS();
+    setInterval(updateISS, 2000);
+
+    new p5(function(p) {
+      let cx, cy, orbitR, earthR;
+
+      p.setup = function() {
+        p.createCanvas(p.windowWidth, p.windowHeight);
+        resize();
+      };
+
+      function resize() {
+        cx = p.width / 2;
+        cy = p.height / 2;
+        orbitR = Math.min(p.width, p.height) * 0.35;
+        earthR = Math.min(p.width, p.height) * 0.12;
+      }
+
+      p.windowResized = function() {
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
+        resize();
+      };
+
+      p.draw = function() {
+        p.background(5);
+
+        // Disegna Terra
+        p.noFill();
+        p.stroke(0, 150, 255);
+        p.ellipse(cx, cy, earthR * 2);
+
+        // Disegna Orbita
+        p.stroke(255, 255, 0, 100);
+        p.ellipse(cx, cy, orbitR * 2);
+
+        // Calcola posizione visiva basata sulla longitudine reale
+        let sx = cx + orbitR * Math.cos(issAngle);
+        let sy = cy + orbitR * Math.sin(issAngle);
+
+        // ISS
+        p.fill(0, 255, 65);
+        p.noStroke();
+        p.rectMode(p.CENTER);
+        p.rect(sx, sy, 8, 8);
+        
+        // Effetto segnale
+        p.noFill();
+        p.stroke(0, 255, 65, 50);
+        p.ellipse(sx, sy, 15, 15);
+      };
+    });
+  </script>
+</body>
+</html>
