@@ -2,11 +2,10 @@
 
 Corso di Grafica in movimento 2025, SUPSI
 
-## Esercizio 1A
+## Esercizio 1
 
-- [Esercizio 1A acceso_spento_2](https://claudio-ceppi.github.io/gim/Esercizio_1A/acceso_spento_2.html)
+- [Posizione del ISS nel globo](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/Es1/)
 
+## Esercizio 2
 
-  
-
-## Esercizio 1BB
+- [Celestrak satelliti](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/Es2/)
