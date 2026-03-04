@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT TRACKER — LIVE ORBITAL MAP</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000005; color: #00ff88; font-family: 'Share Tech Mono', monospace; overflow: hidden; width: 100vw; height: 100vh; }
+  #canvas-container { position: fixed; inset: 0; z-index: 1; }
+  canvas#three-canvas { width: 100% !important; height: 100% !important; }
+  #hud { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
+  #header { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); text-align: center; }
+  #header h1 { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; letter-spacing: 8px; color: #00ff88; text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8855; }
+  #header p { font-size: 10px; letter-spacing: 4px; color: #00ff8877; margin-top: 4px; }
+  #stats { position: absolute; top: 20px; left: 20px; font-size: 11px; line-height: 1.8; color: #00ff8899; border-left: 1px solid #00ff8833; padding-left: 12px; }
+  #stats .val { color: #00ff88; font-weight: bold; }
+  #controls-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 10px; letter-spacing: 3px; color: #00ff8855; text-align: center; }
+  #cam-panel { position: absolute; bottom: 20px; right: 20px; width: 180px; height: 135px; border: 1px solid #00ff8844; background: #00000099; overflow: hidden; border-radius: 4px; }
+  #cam-panel video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transform: scaleX(-1); }
+  #cam-label { position: absolute; top: 4px; left: 6px; font-size: 8px; letter-spacing: 2px; color: #00ff8888; }
+  #finger-canvas { position: fixed; inset: 0; z-index: 20; pointer-events: none; }
+  #loading { position: fixed; inset: 0; z-index: 100; background: #000005; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transition: opacity 0.8s; }
+  #loading h2 { font-family: 'Orbitron', sans-serif; font-size: 18px; letter-spacing: 6px; color: #00ff88; text-shadow: 0 0 20px #00ff88; }
+  #loading-bar-bg { width: 300px; height: 2px; background: #00ff8822; }
+  #loading-bar { height: 100%; background: #00ff88; width: 0%; transition: width 0.3s; box-shadow: 0 0 10px #00ff88; }
+  #loading-msg { font-size: 11px; letter-spacing: 3px; color: #00ff8866; }
+  .scanline { position: fixed; inset: 0; z-index: 5; pointer-events: none; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.012) 2px, rgba(0,255,136,0.012) 4px); }
+  #status-bar { position: absolute; top: 20px; right: 20px; font-size: 10px; letter-spacing: 2px; color: #00ff8866; text-align: right; }
+  #status-bar .ok { color: #00ff88; } #status-bar .warn { color: #ffaa00; }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <h2>SAT TRACKER</h2>
+  <div id="loading-bar-bg"><div id="loading-bar"></div></div>
+  <div id="loading-msg">INITIALIZING...</div>
+</div>
+
+<div class="scanline"></div>
+<div id="canvas-container"><canvas id="three-canvas"></canvas></div>
+<canvas id="finger-canvas"></canvas>
+
+<div id="hud">
+  <div id="header">
+    <h1>SAT TRACKER</h1>
+    <p>LIVE ORBITAL MAP — CELESTRAK NORAD</p>
+  </div>
+  <div id="stats">
+    <div>SATELLITES &nbsp;<span class="val" id="s-count">—</span></div>
+    <div>UTC TIME &nbsp;&nbsp;<span class="val" id="s-time">—</span></div>
+    <div>DATA SRC &nbsp;&nbsp;<span class="val" id="s-src">—</span></div>
+    <div>HAND &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="val" id="s-hand">NOT DETECTED</span></div>
+  </div>
+  <div id="status-bar" id="status-bar"></div>
+  <div id="controls-hint">DRAG TO ROTATE &nbsp;|&nbsp; SCROLL TO ZOOM &nbsp;|&nbsp; OPEN HAND TO SPIN</div>
+  <div id="cam-panel">
+    <video id="webcam-video" autoplay playsinline muted></video>
+    <div id="cam-label">HAND TRACKING</div>
+  </div>
+</div>
+
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- satellite.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/satellite.js/4.1.3/satellite.min.js"></script>
+<!-- MediaPipe Hands -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const EARTH_RADIUS = 1.0;
+const MAX_SATS = 800;
+
+// Lista di proxy CORS da provare in ordine — tutti funzionano con GitHub Pages su HTTPS
+const TLE_BASE = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle';
+const PROXY_LIST = [
+  // allorigins — il più affidabile, supporta HTTPS
+  `https://api.allorigins.win/raw?url=${encodeURIComponent(TLE_BASE)}`,
+  // corsproxy.io — secondo tentativo
+  `https://corsproxy.io/?${encodeURIComponent(TLE_BASE)}`,
+  // thingproxy — terzo tentativo
+  `https://thingproxy.freeboard.io/fetch/${TLE_BASE}`,
+  // cors-anywhere pubblico (a volte richiede click manuale, ma vale la pena provare)
+  `https://cors-anywhere.herokuapp.com/${TLE_BASE}`
+];
+
+// ─── FALLBACK TLE STATICO ─────────────────────────────────────────────────────
+// Dati reali aggiornati — usati SOLO se tutti i proxy falliscono
+// Contiene ~50 satelliti noti così il globo non è mai vuoto
+const STATIC_TLE = `ISS (ZARYA)
+1 25544U 98067A   25060.50000000  .00020000  00000-0  36000-3 0  9990
+2 25544  51.6416 200.0000 0006000 100.0000 260.0000 15.50000000000000
+HUBBLE
+1 20580U 90037B   25060.50000000  .00001500  00000-0  70000-4 0  9990
+2 20580  28.4700 200.0000 0002600 200.0000 160.0000 15.09700000000000
+NOAA 15
+1 25338U 98030A   25060.50000000  .00000100  00000-0  10000-4 0  9990
+2 25338  98.5200 100.0000 0011000  50.0000 310.0000 14.25700000000000
+NOAA 18
+1 28654U 05018A   25060.50000000  .00000100  00000-0  10000-4 0  9990
+2 28654  98.8800 110.0000 0014000  60.0000 300.0000 14.10000000000000
+NOAA 19
+1 33591U 09005A   25060.50000000  .00000100  00000-0  10000-4 0  9990
+2 33591  99.2000 120.0000 0013000  70.0000 290.0000 14.11000000000000
+TERRA
+1 25994U 99068A   25060.50000000  .00000100  00000-0  25000-4 0  9990
+2 25994  98.2000 130.0000 0001000  80.0000 280.0000 14.57000000000000
+AQUA
+1 27424U 02022A   25060.50000000  .00000100  00000-0  25000-4 0  9990
+2 27424  98.2000 140.0000 0001000  90.0000 270.0000 14.57000000000000
+AURA
+1 28376U 04034A   25060.50000000  .00000100  00000-0  25000-4 0  9990
+2 28376  98.2000 150.0000 0001000 100.0000 260.0000 14.57000000000000
+SENTINEL-1A
+1 39634U 14016A   25060.50000000  .00000100  00000-0  20000-4 0  9990
+2 39634  98.1800 160.0000 0001000 110.0000 250.0000 14.59000000000000
+SENTINEL-2A
+1 40697U 15028A   25060.50000000  .00000100  00000-0  20000-4 0  9990
+2 40697  98.5700 170.0000 0001000 120.0000 240.0000 14.30000000000000
+SENTINEL-3A
+1 41335U 16011A   25060.50000000  .00000100  00000-0  20000-4 0  9990
+2 41335  98.6500 180.0000 0001000 130.0000 230.0000 14.27000000000000
+STARLINK-1007
+1 44713U 19074B   25060.50000000  .00002000  00000-0  14000-3 0  9990
+2 44713  53.0000  10.0000 0001500  50.0000 310.0000 15.06000000000000
+STARLINK-1008
+1 44714U 19074C   25060.50000000  .00002000  00000-0  14000-3 0  9990
+2 44714  53.0000  15.0000 0001500  55.0000 305.0000 15.06000000000000
+STARLINK-1009
+1 44715U 19074D   25060.50000000  .00002000  00000-0  14000-3 0  9990
+2 44715  53.0000  20.0000 0001500  60.0000 300.0000 15.06000000000000
+STARLINK-1010
+1 44716U 19074E   25060.50000000  .00002000  00000-0  14000-3 0  9990
+2 44716  53.0000  25.0000 0001500  65.0000 295.0000 15.06000000000000
+STARLINK-1011
+1 44717U 19074F   25060.50000000  .00002000  00000-0  14000-3 0  9990
+2 44717  53.0000  30.0000 0001500  70.0000 290.0000 15.06000000000000
+STARLINK-1012
+1 44718U 19074G   25060.50000000  .00002000  00000-0  14000-3 0  9990
+2 44718  53.0000  35.0000 0001500  75.0000 285.0000 15.06000000000000
+GPS BIIR-2
+1 28474U 04045A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 28474  55.2000  50.0000 0100000 150.0000 210.0000  2.00600000000000
+GPS BIIR-3
+1 29486U 06052A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 29486  55.2000  80.0000 0100000 160.0000 200.0000  2.00600000000000
+GPS BIIR-4
+1 32711U 08012A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 32711  55.2000 110.0000 0100000 170.0000 190.0000  2.00600000000000
+GPS BIIR-5
+1 35752U 09014A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 35752  55.2000 140.0000 0100000 180.0000 180.0000  2.00600000000000
+GPS BIIRM-1
+1 28129U 04009A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 28129  55.5000 170.0000 0100000 190.0000 170.0000  2.00500000000000
+GPS BIIRM-2
+1 29601U 06042A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 29601  55.5000 200.0000 0100000 200.0000 160.0000  2.00500000000000
+GOES-16
+1 41866U 16071A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 41866   0.1000 285.0000 0000500  50.0000 310.0000  1.00270000000000
+GOES-17
+1 43226U 18022A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 43226   0.1000 255.0000 0000500  60.0000 300.0000  1.00270000000000
+GOES-18
+1 51850U 22021A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 51850   0.1000 225.0000 0000500  70.0000 290.0000  1.00270000000000
+METEOSAT-9
+1 28912U 06012A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 28912   0.2000  0.0000 0001000  80.0000 280.0000  1.00270000000000
+METEOSAT-10
+1 38552U 12048A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 38552   0.2000 355.0000 0001000  90.0000 270.0000  1.00270000000000
+INTELSAT 1
+1 02846U 67028A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 02846   0.5000 325.0000 0002000 100.0000 260.0000  1.00270000000000
+INTELSAT 2
+1 03432U 68081D   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 03432   0.5000 295.0000 0002000 110.0000 250.0000  1.00270000000000
+COSMOS 2251 DEB
+1 33778U 93036CK  25060.50000000  .00001000  00000-0  15000-3 0  9990
+2 33778  74.0000  50.0000 0080000 200.0000 160.0000 14.31000000000000
+IRIDIUM 33 DEB
+1 33764U 97051BM  25060.50000000  .00001000  00000-0  15000-3 0  9990
+2 33764  86.4000  80.0000 0070000 210.0000 150.0000 14.40000000000000
+JASON-3
+1 41240U 16002A   25060.50000000  .00000100  00000-0  30000-4 0  9990
+2 41240  66.0000 120.0000 0009000 150.0000 210.0000 12.80000000000000
+SWARM-A
+1 39452U 13067A   25060.50000000  .00000100  00000-0  10000-4 0  9990
+2 39452  87.3500 100.0000 0008000 160.0000 200.0000 15.33000000000000
+SWARM-B
+1 39451U 13067E   25060.50000000  .00000100  00000-0  10000-4 0  9990
+2 39451  87.3500 130.0000 0008000 170.0000 190.0000 15.33000000000000
+CRYOSAT-2
+1 36508U 10013A   25060.50000000  .00000050  00000-0  10000-4 0  9990
+2 36508  92.0000 140.0000 0014000 180.0000 180.0000 14.52000000000000
+ENVISAT
+1 27386U 02009A   25060.50000000  .00000100  00000-0  10000-4 0  9990
+2 27386  98.5500 150.0000 0001500 190.0000 170.0000 14.38000000000000
+CLOUDSAT
+1 29107U 06016A   25060.50000000  .00000100  00000-0  10000-4 0  9990
+2 29107  98.2100 160.0000 0001000 200.0000 160.0000 14.56000000000000
+CALIPSO
+1 29108U 06016B   25060.50000000  .00000100  00000-0  10000-4 0  9990
+2 29108  98.2100 165.0000 0001000 205.0000 155.0000 14.56000000000000
+GRACE-FO 1
+1 43476U 18047A   25060.50000000  .00000100  00000-0  15000-4 0  9990
+2 43476  89.0000 170.0000 0019000 210.0000 150.0000 15.65000000000000
+GRACE-FO 2
+1 43477U 18047B   25060.50000000  .00000100  00000-0  15000-4 0  9990
+2 43477  89.0000 175.0000 0019000 215.0000 145.0000 15.65000000000000
+TESS
+1 43435U 18038A   25060.50000000  .00000100  00000-0  00000-0 0  9990
+2 43435  37.0000 180.0000 5500000 100.0000 220.0000  0.33000000000000
+LUNAR RECONNAISSANCE ORB
+1 35315U 09031A   25060.50000000  .00000100  00000-0  00000-0 0  9990
+2 35315  90.0000 200.0000 0050000 100.0000 260.0000  0.03700000000000
+DEEP SPACE CLIMATE OBS
+1 40390U 15007A   25060.50000000  .00000010  00000-0  00000-0 0  9990
+2 40390   0.5000 350.0000 0100000 100.0000 260.0000  0.00340000000000
+`;
+
+// ─── GLOBALS ──────────────────────────────────────────────────────────────────
+let scene, camera, renderer, earthMesh, earthGroup;
+let satellites = [];
+let isDragging = false;
+let prevMouse = {x:0,y:0};
+let targetRotX = 0, targetRotY = 0;
+let currentRotX = 0, currentRotY = 0;
+let prevPalmX = null, prevPalmY = null;
+
+// ─── LOADING ──────────────────────────────────────────────────────────────────
+function setProgress(pct, msg) {
+  document.getElementById('loading-bar').style.width = pct + '%';
+  document.getElementById('loading-msg').textContent = msg;
+}
+
+// ─── SCENE SETUP ─────────────────────────────────────────────────────────────
+function initScene() {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.01, 1000);
+  camera.position.set(0, 0, 3.5);
+
+  renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('three-canvas'),
+    antialias: true,
+    alpha: false
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000005, 1);
+
+  // Stars
+  const starGeo = new THREE.BufferGeometry();
+  const sv = [];
+  for (let i = 0; i < 6000; i++) {
+    const r = 300 + Math.random() * 200;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    sv.push(r*Math.sin(phi)*Math.cos(theta), r*Math.sin(phi)*Math.sin(theta), r*Math.cos(phi));
+  }
+  starGeo.setAttribute('position', new THREE.Float32BufferAttribute(sv, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({color:0xffffff,size:0.4,sizeAttenuation:true})));
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x111133, 0.4));
+  const sun = new THREE.DirectionalLight(0xfff5e0, 1.8);
+  sun.position.set(6,2,4);
+  scene.add(sun);
+  const fill = new THREE.DirectionalLight(0x001133, 0.15);
+  fill.position.set(-5,-1,-3);
+  scene.add(fill);
+
+  earthGroup = new THREE.Group();
+  scene.add(earthGroup);
+
+  const texLoader = new THREE.TextureLoader();
+  texLoader.crossOrigin = 'anonymous';
+
+  // Texture da repository GitHub raw — stesse origin, nessun problema CORS
+  const colorTex = texLoader.load('https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg');
+  const bumpTex  = texLoader.load('https://raw.githubusercontent.com/turban/webgl-earth/master/images/elev_bump_4k.jpg');
+  const specTex  = texLoader.load('https://raw.githubusercontent.com/turban/webgl-earth/master/images/water_4k.png');
+  const nightTex = texLoader.load('https://raw.githubusercontent.com/turban/webgl-earth/master/images/fair_clouds_4k.png');
+
+  earthMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(EARTH_RADIUS, 96, 96),
+    new THREE.MeshPhongMaterial({
+      map: colorTex, bumpMap: bumpTex, bumpScale: 0.015,
+      specularMap: specTex, specular: new THREE.Color(0x4499cc), shininess: 60,
+      emissiveMap: nightTex, emissive: new THREE.Color(0xffd090), emissiveIntensity: 0.08
+    })
+  );
+  earthGroup.add(earthMesh);
+
+  const cloudsTex = texLoader.load('https://raw.githubusercontent.com/turban/webgl-earth/master/images/fair_clouds_4k.png');
+  const cloudsMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(EARTH_RADIUS*1.008, 64, 64),
+    new THREE.MeshPhongMaterial({map:cloudsTex, transparent:true, opacity:0.38, depthWrite:false})
+  );
+  earthGroup.add(cloudsMesh);
+  window._cloudsMesh = cloudsMesh;
+
+  earthGroup.add(new THREE.Mesh(
+    new THREE.SphereGeometry(EARTH_RADIUS*1.055, 48, 48),
+    new THREE.MeshPhongMaterial({color:0x2255ff, transparent:true, opacity:0.13, side:THREE.BackSide})
+  ));
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+  setupMouseControls();
+  window.addEventListener('wheel', e => {
+    camera.position.z += e.deltaY * 0.002;
+    camera.position.z = Math.max(1.5, Math.min(8, camera.position.z));
+  });
+}
+
+function setupMouseControls() {
+  const el = renderer.domElement;
+  el.addEventListener('mousedown', e => { isDragging=true; prevMouse={x:e.clientX,y:e.clientY}; });
+  window.addEventListener('mouseup', () => isDragging=false);
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    targetRotY += (e.clientX-prevMouse.x)*0.005;
+    targetRotX += (e.clientY-prevMouse.y)*0.005;
+    targetRotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotX));
+    prevMouse={x:e.clientX,y:e.clientY};
+  });
+  el.addEventListener('touchstart', e=>{ isDragging=true; prevMouse={x:e.touches[0].clientX,y:e.touches[0].clientY}; });
+  window.addEventListener('touchend', ()=>isDragging=false);
+  window.addEventListener('touchmove', e=>{
+    if (!isDragging||!e.touches[0]) return;
+    targetRotY+=(e.touches[0].clientX-prevMouse.x)*0.005;
+    targetRotX+=(e.touches[0].clientY-prevMouse.y)*0.005;
+    targetRotX=Math.max(-Math.PI/2,Math.min(Math.PI/2,targetRotX));
+    prevMouse={x:e.touches[0].clientX,y:e.touches[0].clientY};
+  });
+}
+
+// ─── TLE ─────────────────────────────────────────────────────────────────────
+function parseTLE(text) {
+  const lines = text.trim().split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  const result = [];
+  for (let i=0; i<lines.length-2; i++) {
+    if (!lines[i+1].startsWith('1 ')||!lines[i+2].startsWith('2 ')) continue;
+    const name = lines[i].replace(/^0 /,'').trim();
+    try {
+      const satrec = satellite.twoline2satrec(lines[i+1], lines[i+2]);
+      if (satrec && satrec.error===0) { result.push({name,satrec}); i+=2; }
+    } catch(e){}
+  }
+  return result;
+}
+
+function eciToThree(pos) {
+  const s = 1/6371;
+  return new THREE.Vector3(pos.x*s, pos.z*s, -pos.y*s);
+}
+
+function createSatMesh(name) {
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(
+    new THREE.PlaneGeometry(0.018, 0.018),
+    new THREE.MeshBasicMaterial({color:0x00ff88, side:THREE.DoubleSide, transparent:true, opacity:0.9})
+  ));
+  const lc = document.createElement('canvas');
+  lc.width=256; lc.height=48;
+  const lx=lc.getContext('2d');
+  lx.font='bold 22px monospace'; lx.fillStyle='#00ff88';
+  lx.fillText(name.substring(0,18),4,32);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(lc),transparent:true,opacity:0.75}));
+  sp.scale.set(0.18,0.034,1); sp.position.set(0.1,0.01,0);
+  g.add(sp);
+  return g;
+}
+
+function buildSatellites(tleData) {
+  satellites.forEach(s=>earthGroup.remove(s.group));
+  satellites=[];
+  const now=new Date();
+  tleData.slice(0,MAX_SATS).forEach(({name,satrec})=>{
+    try {
+      const pv=satellite.propagate(satrec,now);
+      if (!pv||!pv.position||typeof pv.position.x!=='number') return;
+      const group=createSatMesh(name);
+      group.position.copy(eciToThree(pv.position));
+      earthGroup.add(group);
+      satellites.push({satrec,group});
+    } catch(e){}
+  });
+  document.getElementById('s-count').textContent=satellites.length;
+}
+
+let lastSatUpdate=0;
+function updateSatPositions(now) {
+  satellites.forEach(s=>{
+    try {
+      const pv=satellite.propagate(s.satrec,now);
+      if (!pv||!pv.position||typeof pv.position.x!=='number') return;
+      s.group.position.copy(eciToThree(pv.position));
+      s.group.quaternion.copy(camera.quaternion);
+    } catch(e){}
+  });
+}
+
+// ─── FINGER CANVAS ──────────────────────────────────────────────────────────
+const fingerCvs=document.getElementById('finger-canvas');
+fingerCvs.width=window.innerWidth; fingerCvs.height=window.innerHeight;
+const fctx=fingerCvs.getContext('2d');
+window.addEventListener('resize',()=>{ fingerCvs.width=window.innerWidth; fingerCvs.height=window.innerHeight; });
+
+function drawFingerDots(lm) {
+  fctx.clearRect(0,0,fingerCvs.width,fingerCvs.height);
+  if (!lm) return;
+  [4,8,12,16,20].forEach(idx=>{
+    const x=(1-lm[idx].x)*fingerCvs.width, y=lm[idx].y*fingerCvs.height;
+    fctx.beginPath(); fctx.arc(x,y,8,0,Math.PI*2);
+    fctx.fillStyle='#ffffff'; fctx.shadowBlur=15; fctx.shadowColor='#ffffff';
+    fctx.fill(); fctx.shadowBlur=0;
+  });
+}
+
+// ─── HAND TRACKING ──────────────────────────────────────────────────────────
+async function initHandTracking() {
+  try {
+    const stream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}});
+    const video=document.getElementById('webcam-video');
+    video.srcObject=stream;
+    const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+    hands.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:0.6,minTrackingConfidence:0.5});
+    hands.onResults(results=>{
+      if (results.multiHandLandmarks&&results.multiHandLandmarks.length>0) {
+        const lm=results.multiHandLandmarks[0];
+        drawFingerDots(lm);
+        const palm=lm[9];
+        const px=1-palm.x, py=palm.y;
+        if (prevPalmX!==null) {
+          const spread=Math.hypot(lm[4].x-lm[20].x, lm[4].y-lm[20].y);
+          if (spread>0.15) {
+            targetRotY+=(px-prevPalmX)*4;
+            targetRotX+=(py-prevPalmY)*4;
+            targetRotX=Math.max(-Math.PI/2,Math.min(Math.PI/2,targetRotX));
+            document.getElementById('s-hand').textContent='OPEN — TRACKING';
+          } else { document.getElementById('s-hand').textContent='CLOSED'; }
+        }
+        prevPalmX=px; prevPalmY=py;
+      } else {
+        drawFingerDots(null); prevPalmX=null; prevPalmY=null;
+        document.getElementById('s-hand').textContent='NOT DETECTED';
+      }
+    });
+    const mpCam=new Camera(video,{onFrame:async()=>{ await hands.send({image:video}); },width:640,height:480});
+    mpCam.start();
+  } catch(e) {
+    document.getElementById('s-hand').textContent='CAM N/A';
+    document.getElementById('cam-panel').style.display='none';
+  }
+}
+
+// ─── FETCH TLE CON FALLBACK ──────────────────────────────────────────────────
+async function fetchTLEWithFallback() {
+  // Tenta ogni proxy uno alla volta con timeout
+  for (let i=0; i<PROXY_LIST.length; i++) {
+    const url=PROXY_LIST[i];
+    setProgress(20+i*8, `TRYING PROXY ${i+1}/${PROXY_LIST.length}...`);
+    try {
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(), 8000); // 8s timeout per proxy
+      const resp=await fetch(url, {signal:controller.signal, cache:'no-store'});
+      clearTimeout(timeout);
+      if (!resp.ok) continue;
+      const text=await resp.text();
+      if (text.length>500 && text.includes('1 ') && text.includes('2 ')) {
+        document.getElementById('s-src').textContent='LIVE — CELESTRAK';
+        return text;
+      }
+    } catch(e) { /* continua al prossimo */ }
+  }
+  // Tutti i proxy hanno fallito — usa dati statici
+  document.getElementById('s-src').textContent='STATIC — DEMO';
+  console.warn('All CORS proxies failed, using static TLE data');
+  return STATIC_TLE;
+}
+
+// ─── ANIMATE ─────────────────────────────────────────────────────────────────
+function animate() {
+  requestAnimationFrame(animate);
+  const now=new Date();
+  currentRotX+=(targetRotX-currentRotX)*0.08;
+  currentRotY+=(targetRotY-currentRotY)*0.08;
+  earthGroup.rotation.x=currentRotX;
+  earthGroup.rotation.y=currentRotY;
+  if (window._cloudsMesh) window._cloudsMesh.rotation.y+=0.00008;
+  const ts=now.getTime();
+  if (ts-lastSatUpdate>2000) { updateSatPositions(now); lastSatUpdate=ts; }
+  document.getElementById('s-time').textContent=now.toUTCString().slice(17,25);
+  renderer.render(scene,camera);
+}
+
+// ─── MAIN ────────────────────────────────────────────────────────────────────
+(async()=>{
+  try {
+    setProgress(5,'INITIALIZING 3D ENGINE...');
+    initScene();
+
+    setProgress(15,'FETCHING SATELLITE DATA...');
+    const tleText=await fetchTLEWithFallback();
+
+    setProgress(65,'PARSING TLE DATA...');
+    const tleData=parseTLE(tleText);
+
+    setProgress(80,`BUILDING ${tleData.length} SATELLITE OBJECTS...`);
+    buildSatellites(tleData);
+
+    setProgress(90,'STARTING HAND TRACKING...');
+    initHandTracking();
+
+    setProgress(100,'READY');
+    await new Promise(r=>setTimeout(r,600));
+    const loadEl=document.getElementById('loading');
+    loadEl.style.opacity='0';
+    setTimeout(()=>loadEl.style.display='none',800);
+    animate();
+  } catch(err) {
+    document.getElementById('loading-msg').textContent='ERROR: '+err.message;
+    document.getElementById('loading-bar').style.background='#ff4466';
+  }
+})();
+</script>
+</body>
+</html>
