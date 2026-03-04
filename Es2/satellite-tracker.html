@@ -293,83 +293,109 @@ function initScene() {
   starField = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.4, sizeAttenuation: true}));
   scene.add(starField);
 
-  // Lights
-  const ambient = new THREE.AmbientLight(0xffffff, 0.3);
+  // Lights — sun as directional, very slight ambient so night side isn't pitch black
+  const ambient = new THREE.AmbientLight(0x111133, 0.4);
   scene.add(ambient);
-  const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
-  sunLight.position.set(5, 3, 5);
+  const sunLight = new THREE.DirectionalLight(0xfff5e0, 1.8);
+  sunLight.position.set(6, 2, 4);
   scene.add(sunLight);
+  // Soft fill from opposite side (earthshine effect)
+  const fillLight = new THREE.DirectionalLight(0x001133, 0.15);
+  fillLight.position.set(-5, -1, -3);
+  scene.add(fillLight);
 
   // Earth group (satellites are children so they rotate together)
   earthGroup = new THREE.Group();
   scene.add(earthGroup);
 
-  // Earth sphere
-  const earthGeo = new THREE.SphereGeometry(EARTH_RADIUS, 64, 64);
+  // Earth sphere — high detail
+  const earthGeo = new THREE.SphereGeometry(EARTH_RADIUS, 96, 96);
 
-  // Procedural earth texture with canvas
-  const texCanvas = document.createElement('canvas');
-  texCanvas.width = 1024; texCanvas.height = 512;
-  const ctx = texCanvas.getContext('2d');
+  // Load real NASA textures from public CDN
+  const texLoader = new THREE.TextureLoader();
+  texLoader.crossOrigin = 'anonymous';
 
-  // Ocean
-  const grad = ctx.createLinearGradient(0, 0, 0, 512);
-  grad.addColorStop(0, '#001830');
-  grad.addColorStop(0.5, '#002244');
-  grad.addColorStop(1, '#001830');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 1024, 512);
+  // Primary color map — NASA Blue Marble (8192×4096 via public tile server)
+  // Using a reliable public mirror at a manageable resolution
+  const earthColorTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg',
+    () => { /* loaded */ },
+    undefined,
+    () => {
+      // fallback to another source
+      earthColorTex.image = null;
+    }
+  );
 
-  // Noise-like continents
-  function drawContinent(rx, ry, rw, rh, color) {
-    ctx.beginPath();
-    ctx.ellipse(rx, ry, rw, rh, 0, 0, Math.PI*2);
-    ctx.fillStyle = color;
-    ctx.fill();
-  }
-  const land = '#0d3d1a';
-  const land2 = '#0a3015';
-  // rough approximations
-  drawContinent(200, 200, 80, 60, land);   // N America
-  drawContinent(220, 300, 60, 50, land2);  // S America
-  drawContinent(480, 220, 90, 70, land);   // Europe/Africa
-  drawContinent(480, 320, 60, 80, land2);  // Africa
-  drawContinent(680, 200, 110, 60, land);  // Asia
-  drawContinent(820, 340, 50, 30, land2);  // Australia
-  drawContinent(100, 460, 200, 30, '#0a2d10'); // Antarctica
-  drawContinent(900, 460, 150, 30, '#0a2d10');
+  // Bump/elevation map for mountain relief
+  const earthBumpTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/elev_bump_4k.jpg'
+  );
 
-  const earthTex = new THREE.CanvasTexture(texCanvas);
+  // Specular/water mask — white=water (shiny), black=land (matte)
+  const earthSpecTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/water_4k.png'
+  );
+
+  // Night lights (emissive) — cities glow on dark side
+  const earthNightTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/fair_clouds_4k.png'
+  );
 
   const earthMat = new THREE.MeshPhongMaterial({
-    map: earthTex,
-    specular: new THREE.Color(0x003366),
-    shininess: 25,
-    emissive: new THREE.Color(0x001122),
-    emissiveIntensity: 0.1
+    map: earthColorTex,
+    bumpMap: earthBumpTex,
+    bumpScale: 0.015,
+    specularMap: earthSpecTex,
+    specular: new THREE.Color(0x4499cc),
+    shininess: 60,
+    emissiveMap: earthNightTex,
+    emissive: new THREE.Color(0xffd090),
+    emissiveIntensity: 0.08
   });
   earthMesh = new THREE.Mesh(earthGeo, earthMat);
   earthGroup.add(earthMesh);
 
-  // Grid overlay
-  const gridMat = new THREE.MeshBasicMaterial({
-    color: 0x00ff88,
-    wireframe: true,
+  // Cloud layer — semi-transparent sphere slightly above surface
+  const cloudsTex = texLoader.load(
+    'https://raw.githubusercontent.com/turban/webgl-earth/master/images/fair_clouds_4k.png'
+  );
+  const cloudsMat = new THREE.MeshPhongMaterial({
+    map: cloudsTex,
     transparent: true,
-    opacity: 0.04
+    opacity: 0.38,
+    depthWrite: false
   });
-  const gridMesh = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS * 1.001, 24, 12), gridMat);
-  earthGroup.add(gridMesh);
+  const cloudsMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(EARTH_RADIUS * 1.008, 64, 64),
+    cloudsMat
+  );
+  earthGroup.add(cloudsMesh);
 
-  // Atmosphere glow
+  // Slow cloud rotation stored for animation
+  window._cloudsMesh = cloudsMesh;
+
+  // Atmosphere glow — blue rim from behind
   const atmMat = new THREE.MeshPhongMaterial({
-    color: 0x0033ff,
+    color: 0x2255ff,
     transparent: true,
-    opacity: 0.08,
+    opacity: 0.13,
     side: THREE.BackSide
   });
-  const atmMesh = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS * 1.06, 32, 32), atmMat);
+  const atmMesh = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS * 1.055, 48, 48), atmMat);
   earthGroup.add(atmMesh);
+
+  // Second inner glow for haze effect
+  const haze = new THREE.Mesh(
+    new THREE.SphereGeometry(EARTH_RADIUS * 1.02, 48, 48),
+    new THREE.MeshPhongMaterial({
+      color: 0x113377,
+      transparent: true,
+      opacity: 0.06,
+      side: THREE.BackSide
+    })
+  );
+  earthGroup.add(haze);
 
   window.addEventListener('resize', onResize);
   setupMouseControls();
@@ -643,6 +669,9 @@ function animate() {
   currentRotY += (targetRotY - currentRotY) * 0.08;
   earthGroup.rotation.x = currentRotX;
   earthGroup.rotation.y = currentRotY;
+
+  // Slowly rotate cloud layer independently
+  if (window._cloudsMesh) window._cloudsMesh.rotation.y += 0.00008;
 
   // Update sat positions every 2s
   const ts = now.getTime();
