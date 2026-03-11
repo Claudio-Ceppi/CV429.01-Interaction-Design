@@ -10,3 +10,8 @@ Corso di Grafica in movimento 2025, SUPSI
 ## Esercizio 2
 
 - [Celestrak satelliti](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/Es2/)
+
+
+## Esercizio 2
+
+- [Intenzioni progetto NASA](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/Intenzioni_progetto_1/)
