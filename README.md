@@ -20,7 +20,7 @@ Visualizzatore di suoni
 Il progetto trasforma l'archivio sonoro della NASA in sculture digitali 3D esplorabili attraverso il movimento delle mani. Ogni suono diventa un paesaggio luminoso dove altezza, frequenza e tempo si fondono in una forma geometrica dinamica. L'utente interagisce senza toccare lo schermo, modellando nello spazio i segnali storici del cosmo e rendendo visibile l'energia invisibile dell'esplorazione spaziale.
 
 Target: 
-giovani curiosi, sound designer
+non vedenti, sordi, giovani curiosi, sound designer
 
 Modalità di interazione:
 isualizzazione 3d di suoni famosi di Nasa. Possibilità di ruotare la visuale attorno al suono, finger traking.
