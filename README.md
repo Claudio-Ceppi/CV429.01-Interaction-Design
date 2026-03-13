@@ -23,4 +23,4 @@ Target:
 sordi, giovani curiosi, sound designer
 
 Modalità di interazione:
-isualizzazione 3d di suoni famosi di Nasa. Possibilità di ruotare la visuale attorno al suono, finger traking.
+visualizzazione di testi di famosi audio in missione di Nasa.
