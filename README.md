@@ -15,12 +15,13 @@ Corso di Grafica in movimento 2025, SUPSI
 ## NASA intenzioni
 
   
-Visualizzatore di suoni
+NASA.SAY
 
-Il progetto trasforma l'archivio sonoro della NASA in sculture digitali 3D esplorabili attraverso il movimento delle mani. Ogni suono diventa un paesaggio luminoso dove altezza, frequenza e tempo si fondono in una forma geometrica dinamica. L'utente interagisce senza toccare lo schermo, modellando nello spazio i segnali storici del cosmo e rendendo visibile l'energia invisibile dell'esplorazione spaziale.
+Il progetto è una piattaforma per persone sorde che visualizza le storiche comunicazioni della NASA. L’archivio audio viene trasformato in testi monumentali sincronizzati ad alto contrasto per garantirne la massima leggibilità. Ogni citazione è accompagnata da metadati che contestualizzano il periodo storico e l'importanza della missione.
 
 Target: 
-sordi, giovani curiosi, sound designer
+persone sorde o con disabilità visive / interessati alle comunicazioni spaziali.
 
 Modalità di interazione:
 visualizzazione di testi di famosi audio in missione di Nasa.
+Menu organizzato in categorie di missione contenenti i vari mp3.
