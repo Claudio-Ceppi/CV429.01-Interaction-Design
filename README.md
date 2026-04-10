@@ -31,7 +31,7 @@ https://github.com/user-attachments/assets/38d1768e-a90e-45dd-b12b-1ac0aa1151b3
 ## Tecnologia usata
 Il sito è costruito in HTML, CSS e JavaScript puro, senza framework esterni, organizzato in quattro file: index.html per la struttura, style.css per il design, script.js per tutta la logica di riproduzione e interazione, e scenes.js che contiene il database completo delle trascrizioni, con ogni frase associata ai propri timestamp di inizio e fine. La sincronizzazione avviene confrontando in tempo reale la posizione dell'audio con questi timestamp tramite un loop continuo. La riproduzione avviene tramite le Web Audio API del browser. L'interfaccia tipografica è gestita interamente via JavaScript, con transizioni CSS per i cambi di traccia.
 
-Database trascrizioni 
+1.Database trascrizioni 
 
 ```scenes.js
 const SCENES = {
@@ -45,7 +45,7 @@ const SCENES = {
 }
 ```
 
-Loop di sincronizzazione
+2.Loop di sincronizzazione
 
 ```script.js
 (function loop(){
@@ -58,7 +58,7 @@ Loop di sincronizzazione
 })();
 ```
 
-Motore audio
+3.Motore audio
 
 ```script.js
 async function loadTrack(t) {
