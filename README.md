@@ -6,7 +6,8 @@ Progetto 1: La conquista dello spazio
 
 # NASA.SAY
 Autore: Claudio Ceppi \
-[NASA.SAY]([https://github.com/ixd-supsi/2026/tree/main/esempi/es06_array_7](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/NASA.SAY/files/)
+[NASA.SAY](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/NASA.SAY/files/)
+
 
 
 ## Introduzione e tema
