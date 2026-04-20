@@ -1,0 +1,586 @@
+/* ═══════════════════════════════════════════════
+   NASA.SAY v5 — STYLE.CSS
+   Font: Roboto (300/400/500/700/900)
+═══════════════════════════════════════════════ */
+:root {
+  --bg:        #000;
+  --fg:        #fff;
+  --dim:       rgba(255,255,255,.30);
+  --border:    rgba(255,255,255,.13);
+  --sidebar-w: 220px;
+  --bottom-h:  48px;      /* progress + info toggle bar */
+  --drawer-h:  250px;     /* info drawer open height */
+  --f:         'Roboto', sans-serif;
+  --neon:      #39ff14;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100%; height:100%;
+  background:var(--bg); color:var(--fg);
+  font-family:var(--f);
+  overflow:hidden;
+  cursor:crosshair;
+}
+
+/* ── LOADER ─────────────────────────────────── */
+#loader {
+  position:fixed; inset:0; background:#000; z-index:300;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:14px;
+  animation:loaderOut .5s ease 1.5s forwards;
+  pointer-events:none;
+}
+@keyframes loaderOut { to { opacity:0; visibility:hidden; } }
+.ll { font-family:var(--f); font-weight:900; font-size:clamp(3rem,8vw,6rem); letter-spacing:.08em; line-height:1; text-transform:uppercase; }
+.ls { font-size:.6rem; letter-spacing:.32em; color:var(--dim); text-transform:uppercase; font-weight:400; }
+.lbw { width:160px; height:1px; background:rgba(255,255,255,.1); margin-top:6px; }
+.lb  { height:100%; background:#fff; animation:lp 1.4s ease forwards; }
+@keyframes lp { from{width:0} to{width:100%} }
+
+/* ── OVERLAYS ────────────────────────────────── */
+#tipOv       { position:fixed; inset:0; z-index:200; pointer-events:none; }
+#swipe-flash { position:fixed; inset:0; z-index:190; pointer-events:none; background:#fff; opacity:0; transition:opacity .06s; }
+
+/* ── LAYOUT ──────────────────────────────────── */
+#sidebar {
+  position:fixed; top:0; left:0; bottom:0;
+  width:var(--sidebar-w);
+  border-right:2px solid var(--fg);
+  display:flex; flex-direction:column;
+  z-index:100; background:var(--bg);
+}
+
+#stage {
+  position:fixed;
+  top:0; left:var(--sidebar-w); right:0; bottom:0;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+
+/* ── SIDEBAR HEADER ──────────────────────────── */
+#sidebar-header {
+  padding:18px 16px 14px;
+  border-bottom:2px solid var(--fg);
+  flex-shrink:0;
+}
+#logo {
+  font-family:var(--f);
+  font-weight:900;
+  font-size:2.3rem;
+  line-height:.9;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+#logo-sub {
+  font-size:.46rem;
+  letter-spacing:.20em;
+  color:var(--dim);
+  margin-top:7px;
+  text-transform:uppercase;
+  font-weight:400;
+}
+
+/* ── TRACK LIST ──────────────────────────────── */
+#track-list {
+  flex:1; overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.08) transparent;
+}
+#track-list::-webkit-scrollbar { width:2px; }
+#track-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1); }
+
+.titem {
+  display:flex; align-items:baseline; gap:10px;
+  padding:10px 16px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  cursor:pointer;
+  font-size:.55rem; letter-spacing:.07em;
+  color:rgba(255,255,255,.48);
+  text-transform:uppercase;
+  font-weight:500;
+  transition:background .08s, color .08s;
+  line-height:1.5;
+  user-select:none;
+}
+.titem:hover { background:rgba(255,255,255,.06); color:#fff; }
+.titem.active { background:#fff; color:#000; }
+.titem-num { font-size:.42rem; color:var(--dim); flex-shrink:0; width:16px; font-weight:400; }
+.titem.active .titem-num { color:rgba(0,0,0,.4); }
+.titem-name { flex:1; }
+.titem.hand-hover { outline:1px solid var(--neon); color:#fff; }
+
+
+
+/* ── WELCOME SCREEN ──────────────────────────── */
+#welcome {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  z-index:10;
+  padding:40px clamp(24px,5vw,80px);
+  pointer-events:none;
+  transition:opacity .5s ease;
+}
+#welcome.hidden { opacity:0; pointer-events:none; }
+#welcome-inner { max-width:580px; text-align:center; }
+.wl-title {
+  font-size:clamp(1.4rem,3vw,2.4rem);
+  font-weight:700;
+  line-height:1.22;
+  letter-spacing:-.01em;
+  color:#fff;
+  margin-bottom:28px;
+}
+.wl-body {
+  font-size:clamp(.72rem,1.2vw,.88rem);
+  font-weight:400;
+  line-height:1.85;
+  color:rgba(255,255,255,.55);
+  margin-bottom:32px;
+  letter-spacing:.02em;
+}
+.wl-cta {
+  font-size:clamp(.6rem,.9vw,.72rem);
+  font-weight:500;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.30);
+}
+
+/* ── SCENE CONTAINER ─────────────────────────── */
+#scene-container {
+  flex:1; position:relative; overflow:hidden;
+}
+#scene-canvas {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  pointer-events:none;
+}
+#particle-canvas {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+#particle-canvas canvas {
+  width:100% !important;
+  height:100% !important;
+}
+#scene-dom {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  overflow:hidden;
+  z-index:2;
+}
+
+/* ── BOTTOM BAR ──────────────────────────────── */
+/* ── BOTTOM BAR ──────────────────────────────── */
+/* Fixed strip at the very bottom of #stage.
+   Contains: thin progress line + ↑ INFO button.
+   Info drawer slides UP from below this bar.       */
+
+#bottom-bar {
+  flex-shrink: 0;
+  height: var(--bottom-h);          /* 48px */
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  position: relative;               /* anchor for the drawer */
+  z-index: 50;
+}
+
+#progress-wrap {
+  display: flex; align-items: center;
+  gap: 10px; padding: 0 14px;
+  height: 20px; flex-shrink: 0;
+}
+#progress-bar {
+  flex: 1; height: 1px;
+  background: rgba(255,255,255,.12);
+  position: relative; overflow: hidden;
+}
+#progress-bar::after {
+  content: ''; position: absolute; top: 0; left: 0; bottom: 0;
+  width: var(--p, 0%);
+  background: rgba(255,255,255,.55);
+  transition: width .2s linear;
+}
+#progress-time {
+  font-size: .4rem; letter-spacing: .1em;
+  color: var(--dim); flex-shrink: 0; font-weight: 400;
+}
+
+#info-toggle-row {
+  flex: 1; display: flex; align-items: center;
+  padding: 0 14px;
+  border-top: 1px solid var(--border);
+}
+#info-toggle-btn {
+  display: flex; align-items: center; gap: 7px;
+  background: transparent; border: none;
+  color: rgba(255,255,255,.42);
+  font-family: var(--f); font-size: .44rem;
+  font-weight: 500; letter-spacing: .18em;
+  text-transform: uppercase;
+  cursor: pointer; padding: 0;
+  transition: color .15s;
+  user-select: none;
+}
+#info-toggle-btn:hover { color: #fff; }
+#info-arrow {
+  display: inline-block;
+  transition: transform .32s ease;
+  font-size: .8rem; line-height: 1;
+}
+/* Arrow points DOWN when drawer is CLOSED (pointing toward where it will come from) */
+/* Arrow points UP  when drawer is OPEN  (pointing toward where it went) */
+#info-toggle-btn.open #info-arrow { transform: rotate(180deg); }
+
+/* ── INFO DRAWER ─────────────────────────────── */
+/*
+  Strategy: the drawer is positioned ABSOLUTELY inside #stage,
+  anchored to the bottom of #stage.
+  When closed: bottom = -var(--drawer-h)  → hidden below the bottom bar
+  When open:   bottom = var(--bottom-h)   → sits just above the bottom bar
+  This is cleaner than transform because it doesn't depend
+  on the element's own height being accurate.
+*/
+#info-drawer {
+  position: absolute;
+  left: 0; right: 0;
+  height: var(--drawer-h);          /* 250px */
+  bottom: calc(-1 * var(--drawer-h)); /* hidden: fully below stage */
+  background: rgba(6,6,6,.97);
+  border-top: 2px solid var(--fg);
+  transition: bottom .36s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+  z-index: 45;
+}
+#info-drawer.open {
+  bottom: var(--bottom-h);           /* revealed: above the bottom bar */
+}
+#info-drawer-inner {
+  height:100%;
+  padding:14px 20px 14px;
+  overflow-y:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+  gap:10px 28px;
+  align-content:start;
+}
+.id-col {
+  display:contents; /* flattened into grid */
+}
+.id-col--wide, .id-col--quote { display:contents; }
+
+.id-row {
+  display:flex; gap:8px;
+  font-size:14px; line-height:1.5;
+  align-items:baseline;
+}
+.id-row--block {
+  flex-direction:column; gap:2px;
+  grid-column:1 / -1;   /* full width for long text */
+}
+.id-lbl {
+  font-size:11px; font-weight:700;
+  color:rgba(255,255,255,.38);
+  flex-shrink:0; min-width:52px;
+  letter-spacing:.06em; text-transform:uppercase;
+}
+.id-row--block .id-lbl { min-width:unset; }
+.id-val { color:#fff; font-size:14px; line-height:1.6; font-weight:400; }
+.id-quote {
+  font-size:13px;
+  color:rgba(255,255,255,.62);
+  line-height:1.72;
+  font-style:italic;
+}
+
+/* ── INFO TOGGLE ROW: space-between for INFO left, AUDIO right ── */
+#info-toggle-row {
+  justify-content: space-between;
+}
+
+/* ── AUDIO TOGGLE BUTTON ─────────────────────── */
+#audio-toggle-btn {
+  display: flex; align-items: center; gap: 7px;
+  background: transparent; border: none;
+  color: rgba(255,255,255,.42);
+  font-family: var(--f); font-size: .44rem;
+  font-weight: 500; letter-spacing: .18em;
+  text-transform: uppercase;
+  cursor: pointer; padding: 0;
+  transition: color .15s;
+  user-select: none;
+}
+#audio-toggle-btn:hover { color: #fff; }
+#audio-arrow {
+  display: inline-block;
+  transition: transform .32s ease;
+  font-size: .8rem; line-height: 1;
+}
+#audio-toggle-btn.open #audio-arrow { transform: rotate(180deg); }
+
+/* ── AUDIO PANEL ─────────────────────────────── */
+#audio-panel {
+  position: absolute;
+  top: 0; bottom: var(--bottom-h);
+  right: calc(-1 * var(--audio-panel-w, 220px));
+  width: var(--audio-panel-w, 220px);
+  background: rgba(6,6,6,.97);
+  border-left: 2px solid var(--fg);
+  transition: right .36s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+  z-index: 45;
+}
+#audio-panel.open {
+  right: 0;
+}
+#audio-panel-inner {
+  height: 100%;
+  padding: 20px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── AUDIO PANEL SECTIONS ────────────────────── */
+.ap-section { display: flex; flex-direction: column; gap: 10px; }
+.ap-label {
+  font-size: .38rem; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+}
+
+/* ── PAN SLIDER ──────────────────────────────── */
+.ap-pan-row {
+  display: flex; align-items: center; gap: 8px;
+}
+.ap-side-lbl {
+  font-size: .42rem; font-weight: 700;
+  letter-spacing: .12em;
+  color: rgba(255,255,255,.38);
+  flex-shrink: 0;
+}
+#pan-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1px;
+  background: rgba(255,255,255,.18);
+  outline: none;
+  border: none;
+  cursor: ew-resize;
+}
+#pan-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: ew-resize;
+}
+#pan-slider::-moz-range-thumb {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  cursor: ew-resize;
+}
+.ap-pan-val {
+  font-size: .38rem; letter-spacing: .1em;
+  color: rgba(255,255,255,.35);
+  text-align: center;
+  font-weight: 400;
+}
+
+/* ── KNOBS ───────────────────────────────────── */
+.ap-section--eq .ap-knobs-row {
+  display: flex; justify-content: space-between; gap: 8px;
+}
+.ap-knob-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  flex: 1;
+}
+.ap-knob {
+  width: 48px; height: 48px;
+  cursor: ns-resize;
+  user-select: none;
+  touch-action: none;
+}
+.ap-knob-svg {
+  width: 100%; height: 100%;
+  overflow: visible;
+}
+.ap-knob-track {
+  fill: none;
+  stroke: rgba(255,255,255,.12);
+  stroke-width: 1.5;
+}
+.ap-knob-line {
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  transform-origin: 24px 24px;
+  transition: none;
+}
+.ap-knob-lbl {
+  font-size: .34rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+}
+.ap-knob-val {
+  font-size: .36rem; letter-spacing: .08em;
+  color: rgba(255,255,255,.35);
+  font-weight: 400;
+}
+
+/* ── SCENE WORDS (draggable) ─────────────────── */
+[data-draggable] { cursor:grab; }
+[data-draggable]:active { cursor:grabbing; }
+
+/* ── GRAPHICS TOGGLE BUTTON ──────────────────── */
+#graphics-toggle-btn {
+  display: flex; align-items: center; gap: 7px;
+  background: transparent; border: none;
+  color: rgba(255,255,255,.42);
+  font-family: var(--f); font-size: .44rem;
+  font-weight: 500; letter-spacing: .18em;
+  text-transform: uppercase;
+  cursor: pointer; padding: 0;
+  transition: color .15s;
+  user-select: none;
+}
+#graphics-toggle-btn:hover { color: #fff; }
+#graphics-arrow {
+  display: inline-block;
+  transition: transform .32s ease;
+  font-size: .8rem; line-height: 1;
+}
+#graphics-toggle-btn.open #graphics-arrow { transform: rotate(180deg); }
+
+/* ── GRAPHICS PANEL ──────────────────────────── */
+#graphics-panel {
+  position: absolute;
+  top: 0; bottom: var(--bottom-h);
+  right: calc(-1 * var(--graphics-panel-w, 240px));
+  width: var(--graphics-panel-w, 240px);
+  background: rgba(6,6,6,.97);
+  border-left: 2px solid var(--fg);
+  transition: right .36s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+  z-index: 44;
+}
+#graphics-panel.open {
+  right: 0;
+}
+#graphics-panel-inner {
+  height: 100%;
+  padding: 20px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.08) transparent;
+}
+#graphics-panel-inner::-webkit-scrollbar { width: 2px; }
+#graphics-panel-inner::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); }
+
+/* Reuse .ap-section, .ap-label, .ap-pan-row, .ap-side-lbl, .ap-pan-val
+   from AUDIO panel — shared styles already defined above */
+
+/* ── GFX SLIDER — same style as pan-slider but generic class ── */
+.gfx-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1px;
+  background: rgba(255,255,255,.18);
+  outline: none;
+  border: none;
+  cursor: ew-resize;
+}
+.gfx-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: ew-resize;
+}
+.gfx-slider::-moz-range-thumb {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  cursor: ew-resize;
+}
+
+/* Apply gfx-slider style to all graphics range inputs */
+#graphics-panel input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1px;
+  background: rgba(255,255,255,.18);
+  outline: none;
+  border: none;
+  cursor: ew-resize;
+}
+#graphics-panel input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: ew-resize;
+}
+#graphics-panel input[type="range"]::-moz-range-thumb {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  cursor: ew-resize;
+}
+
+/* ── COLOR PICKERS ───────────────────────────── */
+.gfx-color-row {
+  display: flex; align-items: center; gap: 10px;
+}
+.gfx-color-pick {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 32px; height: 20px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+.gfx-color-pick::-webkit-color-swatch-wrapper { padding: 0; }
+.gfx-color-pick::-webkit-color-swatch { border: none; border-radius: 1px; }
+.gfx-color-pick:disabled { opacity: .3; cursor: not-allowed; }
+
+.gfx-color-b-enable {
+  display: flex; align-items: center; gap: 5px;
+  font-size: .38rem; letter-spacing: .14em;
+  text-transform: uppercase; font-weight: 500;
+  color: rgba(255,255,255,.35);
+  cursor: pointer;
+  user-select: none;
+}
+.gfx-color-b-enable input { cursor: pointer; accent-color: #fff; }
+.gfx-color-b-toggle-lbl {
+  font-size: .3rem; letter-spacing: .06em;
+  color: rgba(255,255,255,.2);
+  font-weight: 400; text-transform: none;
+}
+
+/* ── REVEAL ANIMATIONS ───────────────────────── */
+@keyframes lineReveal {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}

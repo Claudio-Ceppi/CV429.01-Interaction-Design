@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NASA.SAY</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ll">NASA.SAY</div>
+  <div class="ls">Visual Audio Archive</div>
+  <div class="lbw"><div class="lb"></div></div>
+</div>
+
+<!-- Hand tracking overlay -->
+<div id="swipe-flash"></div>
+
+<!-- LEFT SIDEBAR -->
+<aside id="sidebar">
+  <div id="sidebar-header">
+    <div id="logo">NASA<br>.SAY</div>
+    <div id="logo-sub">Visual Audio Archive</div>
+  </div>
+  <nav id="track-list"></nav>
+</div>
+</aside>
+
+<!-- MAIN STAGE -->
+<main id="stage">
+
+  <!-- Welcome screen — shown until first track is selected -->
+  <div id="welcome">
+    <div id="welcome-inner">
+      <p class="wl-title">The voices that shaped space,<br>now visible.</p>
+      <p class="wl-body">An interactive typographic archive exploring the sound and history of NASA missions, curated in order of cultural popularity. Experience the most iconic transmissions ever recorded.</p>
+      <p class="wl-cta">Select a track from the sidebar to begin the journey.</p>
+    </div>
+  </div>
+
+  <!-- Typographic scene -->
+  <div id="scene-container">
+    <canvas id="scene-canvas"></canvas>
+    <div id="particle-canvas"></div>
+    <div id="scene-dom"></div>
+  </div>
+
+  <!-- GRAPHICS panel — slides in from right, above AUDIO panel trigger -->
+  <div id="graphics-panel">
+    <div id="graphics-panel-inner">
+
+      <!-- 1. OPACITY -->
+      <div class="ap-section">
+        <div class="ap-label">OPACITY</div>
+        <div class="ap-pan-row">
+          <span class="ap-side-lbl">0</span>
+          <input type="range" id="gfx-opacity" min="0" max="1" step="0.01" value="0.5">
+          <span class="ap-side-lbl">100</span>
+        </div>
+        <div class="ap-pan-val" id="gfx-opacity-val">50%</div>
+      </div>
+
+      <!-- 2. SPEED -->
+      <div class="ap-section">
+        <div class="ap-label">SPEED</div>
+        <div class="ap-pan-row">
+          <span class="ap-side-lbl">0</span>
+          <input type="range" id="gfx-speed" min="0" max="2" step="0.01" value="1">
+          <span class="ap-side-lbl">MAX</span>
+        </div>
+        <div class="ap-pan-val" id="gfx-speed-val">1.0×</div>
+      </div>
+
+      <!-- 3. SIZE -->
+      <div class="ap-section">
+        <div class="ap-label">SIZE</div>
+        <div class="ap-pan-row">
+          <span class="ap-side-lbl">S</span>
+          <input type="range" id="gfx-size" min="0.1" max="3" step="0.01" value="1">
+          <span class="ap-side-lbl">L</span>
+        </div>
+        <div class="ap-pan-val" id="gfx-size-val">1.0×</div>
+      </div>
+
+      <!-- 4. COUNT -->
+      <div class="ap-section">
+        <div class="ap-label">COUNT</div>
+        <div class="ap-pan-row">
+          <span class="ap-side-lbl">FEW</span>
+          <input type="range" id="gfx-count" min="500" max="18000" step="500" value="9000">
+          <span class="ap-side-lbl">MAX</span>
+        </div>
+        <div class="ap-pan-val" id="gfx-count-val">9000</div>
+      </div>
+
+      <!-- 5. SPREAD -->
+      <div class="ap-section">
+        <div class="ap-label">SPREAD</div>
+        <div class="ap-pan-row">
+          <span class="ap-side-lbl">IN</span>
+          <input type="range" id="gfx-spread" min="0.2" max="3" step="0.01" value="1">
+          <span class="ap-side-lbl">OUT</span>
+        </div>
+        <div class="ap-pan-val" id="gfx-spread-val">1.0×</div>
+      </div>
+
+      <!-- 6. COLORS -->
+      <div class="ap-section">
+        <div class="ap-label">COLOR A</div>
+        <div class="gfx-color-row">
+          <input type="color" id="gfx-color-a" value="#ffffff" class="gfx-color-pick">
+          <span class="ap-pan-val" id="gfx-color-a-val">#FFFFFF</span>
+        </div>
+      </div>
+
+      <div class="ap-section">
+        <div class="ap-label">COLOR B <span class="gfx-color-b-toggle-lbl">(double-click to disable)</span></div>
+        <div class="gfx-color-row">
+          <input type="color" id="gfx-color-b" value="#ffffff" class="gfx-color-pick" disabled>
+          <label class="gfx-color-b-enable">
+            <input type="checkbox" id="gfx-color-b-enabled"> USE COLOR B
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AUDIO panel — slides in from right -->
+  <div id="audio-panel">
+    <div id="audio-panel-inner">
+
+      <div class="ap-section">
+        <div class="ap-label">PAN</div>
+        <div class="ap-pan-row">
+          <span class="ap-side-lbl">L</span>
+          <input type="range" id="pan-slider" min="-1" max="1" step="0.01" value="0">
+          <span class="ap-side-lbl">R</span>
+        </div>
+        <div class="ap-pan-val" id="pan-val">C</div>
+      </div>
+
+      <div class="ap-section ap-section--eq">
+        <div class="ap-label">EQ</div>
+        <div class="ap-knobs-row">
+
+          <div class="ap-knob-wrap">
+            <div class="ap-knob" id="knob-bass" data-knob="bass" data-val="0">
+              <svg viewBox="0 0 48 48" class="ap-knob-svg">
+                <circle cx="24" cy="24" r="20" class="ap-knob-track"/>
+                <line class="ap-knob-line" x1="24" y1="24" x2="24" y2="6"/>
+              </svg>
+            </div>
+            <div class="ap-knob-lbl">BASS</div>
+            <div class="ap-knob-val" id="knob-bass-val">0</div>
+          </div>
+
+          <div class="ap-knob-wrap">
+            <div class="ap-knob" id="knob-mid" data-knob="mid" data-val="0">
+              <svg viewBox="0 0 48 48" class="ap-knob-svg">
+                <circle cx="24" cy="24" r="20" class="ap-knob-track"/>
+                <line class="ap-knob-line" x1="24" y1="24" x2="24" y2="6"/>
+              </svg>
+            </div>
+            <div class="ap-knob-lbl">MID</div>
+            <div class="ap-knob-val" id="knob-mid-val">0</div>
+          </div>
+
+          <div class="ap-knob-wrap">
+            <div class="ap-knob" id="knob-high" data-knob="high" data-val="0">
+              <svg viewBox="0 0 48 48" class="ap-knob-svg">
+                <circle cx="24" cy="24" r="20" class="ap-knob-track"/>
+                <line class="ap-knob-line" x1="24" y1="24" x2="24" y2="6"/>
+              </svg>
+            </div>
+            <div class="ap-knob-lbl">HIGH</div>
+            <div class="ap-knob-val" id="knob-high-val">0</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom bar: progress + info toggle -->
+  <div id="bottom-bar">
+    <div id="progress-wrap">
+      <div id="progress-bar"></div>
+      <span id="progress-time">0:00</span>
+    </div>
+    <div id="info-toggle-row">
+      <button id="info-toggle-btn" aria-label="Toggle info panel">
+        <span id="info-arrow">↑</span>
+        <span id="info-label">INFO</span>
+      </button>
+      <button id="graphics-toggle-btn" aria-label="Toggle graphics panel">
+        <span id="graphics-label">GRAPHICS</span>
+        <span id="graphics-arrow">←</span>
+      </button>
+      <button id="audio-toggle-btn" aria-label="Toggle audio panel">
+        <span id="audio-label">AUDIO</span>
+        <span id="audio-arrow">←</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Info drawer — slides up from bottom -->
+  <div id="info-drawer">
+    <div id="info-drawer-inner">
+      <div class="id-col">
+        <div class="id-row"><span class="id-lbl">Title</span><span class="id-val" id="ip-title">—</span></div>
+        <div class="id-row"><span class="id-lbl">Year</span><span class="id-val" id="ip-year">—</span></div>
+        <div class="id-row"><span class="id-lbl">Mission</span><span class="id-val" id="ip-mission">—</span></div>
+        <div class="id-row"><span class="id-lbl">Crew</span><span class="id-val" id="ip-crew">—</span></div>
+      </div>
+      <div class="id-col id-col--wide">
+        <div class="id-row id-row--block"><span class="id-lbl">Context</span><span class="id-val" id="ip-context">—</span></div>
+        <div class="id-row id-row--block"><span class="id-lbl">World</span><span class="id-val" id="ip-world">—</span></div>
+      </div>
+      <div class="id-col id-col--quote">
+        <div class="id-row id-row--block"><span class="id-lbl">Full text</span><span class="id-val id-quote" id="ip-quote">—</span></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="scenes.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
