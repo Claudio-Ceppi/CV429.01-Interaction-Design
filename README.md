@@ -4,21 +4,24 @@ Docenti: A. Gysin, G. Profeta
 
 Progetto 1: La conquista dello spazio
 
-# Titolo progetto
-Autore: Nome Cognome \
-[Titolo progetto](https://github.com/ixd-supsi/2026/tree/main/esempi/es06_array_7)
+# NASA.SAY
+Autore: Claudio Ceppi \
+[NASA.SAY](https://github.com/ixd-supsi/2026/tree/main/esempi/es06_array_7)
 
 
 ## Introduzione e tema
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec. Nisi est sit amet facilisis magna etiam tempor. Nisl nisi scelerisque eu ultrices vitae. Id aliquet lectus proin nibh nisl. Urna nec tincidunt praesent semper feugiat nibh. Imperdiet dui accumsan sit amet nulla facilisi morbi. Aliquet enim tortor at auctor urna nunc. Id cursus metus aliquam eleifend mi. Ultricies lacus sed turpis tincidunt id aliquet risus feugiat in. Odio morbi quis commodo odio aenean sed. Turpis cursus in hac habitasse. Sed enim ut sem viverra aliquet eget sit. Iaculis at erat pellentesque adipiscing commodo. Et pharetra pharetra massa massa ultricies mi quis hendrerit dolor. At tempor commodo ullamcorper a lacus vestibulum sed arcu. Ipsum faucibus vitae aliquet nec ullamcorper sit. Tempus quam pellentesque nec nam aliquam sem et tortor. Turpis egestas sed tempus urna et pharetra pharetra massa. Ridiculus mus mauris vitae ultricies leo integer malesuada nunc vel.
+NASA.SAY è un archivio digitale interattivo che raccoglie e restituisce visivamente le dieci trasmissioni audio più iconiche della storia della NASA. Il progetto nasce dall'idea di rendere accessibili questi momenti storici a chi non può fruirli attraverso l'ascolto, in particolare alle persone sorde, offrendo una trascrizione sincronizzata e tradotta delle parole pronunciate, resa visibile in tempo reale sullo schermo attraverso una tipografia espressiva e di grande formato.
+Il sito presenta le tracce ordinate per popolarità culturale, da One Small Step di Neil Armstrong fino ai messaggi meno noti ma ugualmente significativi, accompagnando ogni audio con il testo completo di quanto viene detto, sincronizzato alla riproduzione. L'interfaccia è essenziale, in bianco e nero, e la parola scritta è il vero protagonista visivo dell'esperienza.
 
 
 ## Riferimenti progettuali
-Dolor sit amet consectetur adipiscing elit duis tristique. Sociis natoque penatibus et magnis dis parturient montes nascetur. Est sit amet facilisis magna. Tellus rutrum tellus pellentesque eu. Dictum sit amet justo donec enim. Aliquam malesuada bibendum arcu vitae elementum curabitur vitae. Sed faucibus turpis in eu mi bibendum neque egestas congue. Tellus in metus vulputate eu scelerisque felis imperdiet proin. Dolor magna eget est lorem ipsum dolor. Sit amet mattis vulputate enim nulla. Elit pellentesque habitant morbi tristique senectus et. Vestibulum mattis ullamcorper velit sed ullamcorper morbi tincidunt ornare massa.
+Il progetto si colloca nella tradizione della tipografia brutalista digitale, con sfondo nero, testo bianco di grande formato e assenza totale di elementi decorativi. Sul piano visivo, un riferimento naturale è l'identità grafica storica della NASA, basata sull'uso rigoroso dell'Helvetica e su una gerarchia tipografica chiara e diretta. Sul piano dell'interazione, il progetto si avvicina al principio della kinetic typography, dove il testo appare in sincronia con l'audio diventando esso stesso elemento visivo ed espressivo.
 
 
 ## Design dell’interfaccia e modalità di interazione
-Facilisis magna etiam tempor orci eu. Felis donec et odio pellentesque diam volutpat commodo. Dis parturient montes nascetur ridiculus mus mauris vitae. Nisi vitae suscipit tellus mauris a diam maecenas sed enim. Accumsan sit amet nulla facilisi. Ultricies leo integer malesuada nunc vel risus. Est lorem ipsum dolor sit. Ultrices neque ornare aenean euismod elementum nisi. Ultrices mi tempus imperdiet nulla malesuada pellentesque elit eget gravida. Placerat duis ultricies lacus sed turpis tincidunt id aliquet. Arcu dictum varius duis at consectetur lorem donec massa sapien. Pellentesque habitant morbi tristique senectus. Turpis massa sed elementum tempus egestas sed sed risus pretium. Eros donec ac odio tempor orci. Pellentesque id nibh tortor id aliquet lectus. Risus feugiat in ante metus dictum at. Quam pellentesque nec nam aliquam sem et tortor consequat id. Feugiat nibh sed pulvinar proin gravida hendrerit lectus a. Sit amet dictum sit amet justo donec enim.
+L'interfaccia è divisa in una sidebar fissa a sinistra, con logo, sottotitolo e lista delle dieci tracce selezionabili, e un'area centrale di visualizzazione su sfondo nero.
+Il testo della trasmissione appare sincronizzato all'audio con gerarchia visiva dinamica: la frase attiva occupa gran parte dello schermo in bianco a grande formato, con parole chiave evidenziate cromaticamente, mentre la frase precedente rimane visibile in grigio sopra. Sullo sfondo, un campo di particelle 3D reagisce al volume: quasi invisibili nel silenzio, si espandono e accelerano con la voce.
+In basso, una barra temporale indica l'avanzamento della traccia. Tre pannelli espandibili completano l'interfaccia: INFO mostra anno, equipaggio, contesto storico e testo integrale della trasmissione; AUDIO controlla il bilanciamento stereo e l'equalizzazione (bassi, medi, alti); GRAPHICS gestisce opacità, velocità, dimensione, quantità, espansione e colore delle particelle, con possibilità di usare due colori simultanei.
 
 https://github.com/user-attachments/assets/38d1768e-a90e-45dd-b12b-1ac0aa1151b3
 
@@ -26,33 +29,49 @@ https://github.com/user-attachments/assets/38d1768e-a90e-45dd-b12b-1ac0aa1151b3
 
 
 ## Tecnologia usata
-Nunc consequat interdum varius sit amet mattis vulputate. Vehicula ipsum a arcu cursus vitae congue. Odio ut sem nulla pharetra. Accumsan lacus vel facilisis volutpat est velit egestas dui id. Quisque egestas diam in arcu cursus. Eget nulla facilisi etiam dignissim diam. Aenean sed adipiscing diam donec adipiscing tristique. Porttitor massa id neque aliquam. Sem viverra aliquet eget sit amet tellus cras. Scelerisque eu ultrices vitae auctor eu augue ut lectus. Nunc aliquet bibendum enim facilisis gravida neque convallis a. Lacus sed turpis tincidunt id aliquet risus feugiat.
+Il sito è costruito in HTML,
 
+ CSS e JavaScript puro, senza framework esterni, organizzato in quattro file: index.html per la struttura, style.css per il design, script.js per tutta la logica di riproduzione e interazione, e scenes.js che contiene il database completo delle trascrizioni, con ogni frase associata ai propri timestamp di inizio e fine. La sincronizzazione avviene confrontando in tempo reale la posizione dell'audio con questi timestamp tramite un loop continuo. La riproduzione avviene tramite le Web Audio API del browser. L'interfaccia tipografica è gestita interamente via JavaScript, con transizioni CSS per i cambi di traccia.
 
-```JavaScript
-const image = new Image();
-image.onload = () => {
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.texImage2D(
-		gl.TEXTURE_2D,
-		level,
-		internalFormat,
-		srcFormat,
-		srcType,
-		image
-	);
-	if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-		gl.generateMipmap(gl.TEXTURE_2D);
-	} else {
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	}
-};
-image.src = url;
+1.Database trascrizioni 
+
+```scenes.js
+const SCENES = {
+  ap_step: {
+    subs: [
+      { start: 0,    end: 4.2,  text: "I'm going to step off the LM now." },
+      { start: 4.5,  end: 9.0,  text: "That's one small step for man," },
+      { start: 9.1,  end: 13.5, text: "one giant leap for mankind." },
+    ]
+  }
+}
+```
+
+2.Loop di sincronizzazione
+
+```script.js
+(function loop(){
+  requestAnimationFrame(loop);
+  if(audioBuf){
+    const t = Math.min(curTime(), audioBuf.duration);
+    progressBar.style.setProperty('--p',(t/audioBuf.duration*100).toFixed(1)+'%');
+    progressTime.textContent = fmt(t)+' / '+fmt(audioBuf.duration);
+  }
+})();
+```
+
+3.Motore audio
+
+```script.js
+async function loadTrack(t) {
+  initAudio(); resumeCtx();
+  const ab = await (await fetch(t.url)).arrayBuffer();
+  audioBuf = await audioCtx.decodeAudioData(ab);
+  pOff=0; doPlay();
+}
 ```
 
 ## Target e contesto d’uso
-Sed enim ut sem viverra aliquet eget sit. Iaculis at erat pellentesque adipiscing commodo. Et pharetra pharetra massa massa ultricies mi quis hendrerit dolor. At tempor commodo ullamcorper a lacus vestibulum sed arcu. Ipsum faucibus vitae aliquet nec ullamcorper sit. Tempus quam pellentesque nec nam aliquam sem et tortor. Turpis egestas sed tempus urna et pharetra pharetra massa. Ridiculus mus mauris vitae ultricies leo integer malesuada nunc vel.
+NASA.SAY si rivolge principalmente a persone sorde o ipoacusiche, per le quali il testo sincronizzato è l'unico modo di accedere a queste trasmissioni storiche. Ma l'utente ideale è chiunque voglia rivivere questi momenti in modo contemplativo: seduto nel buio davanti a uno schermo, in silenzio, mentre le parole di Armstrong o Lovell appaiono grandi e lente, come monumenti tipografici.
 
 [<img src="doc/munari.jpg" width="300" alt="Supplemento al dizionario italiano">]()
