@@ -6,7 +6,7 @@ Progetto 1: La conquista dello spazio
 
 # NASA.SAY
 Autore: Claudio Ceppi \
-[NASA.SAY](https://github.com/ixd-supsi/2026/tree/main/esempi/es06_array_7)
+[NASA.SAY]([https://github.com/ixd-supsi/2026/tree/main/esempi/es06_array_7](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/NASA.SAY/files/)
 
 
 ## Introduzione e tema
@@ -23,9 +23,11 @@ L'interfaccia è divisa in una sidebar fissa a sinistra, con logo, sottotitolo e
 Il testo della trasmissione appare sincronizzato all'audio con gerarchia visiva dinamica: la frase attiva occupa gran parte dello schermo in bianco a grande formato, con parole chiave evidenziate cromaticamente, mentre la frase precedente rimane visibile in grigio sopra. Sullo sfondo, un campo di particelle 3D reagisce al volume: quasi invisibili nel silenzio, si espandono e accelerano con la voce.
 In basso, una barra temporale indica l'avanzamento della traccia. Tre pannelli espandibili completano l'interfaccia: INFO mostra anno, equipaggio, contesto storico e testo integrale della trasmissione; AUDIO controlla il bilanciamento stereo e l'equalizzazione (bassi, medi, alti); GRAPHICS gestisce opacità, velocità, dimensione, quantità, espansione e colore delle particelle, con possibilità di usare due colori simultanei.
 
-https://github.com/user-attachments/assets/38d1768e-a90e-45dd-b12b-1ac0aa1151b3
 
-[<img src="doc/cards.gif" width="500" alt="Magic trick">]()
+
+https://github.com/user-attachments/assets/f3b3fb8d-1230-470a-bf5a-ff083b70f15f
+
+
 
 
 ## Tecnologia usata
@@ -33,7 +35,7 @@ Il sito è costruito in HTML,
 
  CSS e JavaScript puro, senza framework esterni, organizzato in quattro file: index.html per la struttura, style.css per il design, script.js per tutta la logica di riproduzione e interazione, e scenes.js che contiene il database completo delle trascrizioni, con ogni frase associata ai propri timestamp di inizio e fine. La sincronizzazione avviene confrontando in tempo reale la posizione dell'audio con questi timestamp tramite un loop continuo. La riproduzione avviene tramite le Web Audio API del browser. L'interfaccia tipografica è gestita interamente via JavaScript, con transizioni CSS per i cambi di traccia.
 
-1.Database trascrizioni 
+1. Database trascrizioni 
 
 ```scenes.js
 const SCENES = {
@@ -47,7 +49,7 @@ const SCENES = {
 }
 ```
 
-2.Loop di sincronizzazione
+2. Loop di sincronizzazione
 
 ```script.js
 (function loop(){
@@ -60,7 +62,7 @@ const SCENES = {
 })();
 ```
 
-3.Motore audio
+3. Motore audio
 
 ```script.js
 async function loadTrack(t) {
