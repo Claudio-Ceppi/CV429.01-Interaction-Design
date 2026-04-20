@@ -19,9 +19,9 @@ Il progetto si colloca nella tradizione della tipografia brutalista digitale, co
 
 
 ## Design dell’interfaccia e modalità di interazione
-L'interfaccia è divisa in due aree principali: una sidebar fissa sul lato sinistro e un'area centrale di visualizzazione. La sidebar contiene il logo NASA.SAY, il sottotitolo "Visual Audio Archive" e l'elenco numerato delle dieci tracce audio, selezionabili con un clic sul titolo. È l'unico elemento di navigazione del sito.
-L'area centrale è il cuore dell'esperienza: su sfondo nero, il testo della trasmissione appare in tempo reale sincronizzato all'audio, con una gerarchia visiva dinamica. La frase in riproduzione occupa gran parte dello schermo in carattere bianco di grande formato, con alcune parole chiave evidenziate cromaticamente per sottolineare i momenti più significativi del testo. La frase precedente rimane visibile in grigio più in alto, creando una stratificazione temporale della parola. Quando l'audio viene messo in pausa o termina, l'ultima frase rimane visibile a schermo.
-In basso è presente una barra temporale che indica l'avanzamento della traccia e un pannello INFO espandibile che mostra le informazioni contestuali sulla missione di riferimento.
+L'interfaccia è divisa in una sidebar fissa a sinistra, con logo, sottotitolo e lista delle dieci tracce selezionabili, e un'area centrale di visualizzazione su sfondo nero.
+Il testo della trasmissione appare sincronizzato all'audio con gerarchia visiva dinamica: la frase attiva occupa gran parte dello schermo in bianco a grande formato, con parole chiave evidenziate cromaticamente, mentre la frase precedente rimane visibile in grigio sopra. Sullo sfondo, un campo di particelle 3D reagisce al volume: quasi invisibili nel silenzio, si espandono e accelerano con la voce.
+In basso, una barra temporale indica l'avanzamento della traccia. Tre pannelli espandibili completano l'interfaccia: INFO mostra anno, equipaggio, contesto storico e testo integrale della trasmissione; AUDIO controlla il bilanciamento stereo e l'equalizzazione (bassi, medi, alti); GRAPHICS gestisce opacità, velocità, dimensione, quantità, espansione e colore delle particelle, con possibilità di usare due colori simultanei.
 
 https://github.com/user-attachments/assets/38d1768e-a90e-45dd-b12b-1ac0aa1151b3
 
@@ -29,7 +29,9 @@ https://github.com/user-attachments/assets/38d1768e-a90e-45dd-b12b-1ac0aa1151b3
 
 
 ## Tecnologia usata
-Il sito è costruito in HTML, CSS e JavaScript puro, senza framework esterni, organizzato in quattro file: index.html per la struttura, style.css per il design, script.js per tutta la logica di riproduzione e interazione, e scenes.js che contiene il database completo delle trascrizioni, con ogni frase associata ai propri timestamp di inizio e fine. La sincronizzazione avviene confrontando in tempo reale la posizione dell'audio con questi timestamp tramite un loop continuo. La riproduzione avviene tramite le Web Audio API del browser. L'interfaccia tipografica è gestita interamente via JavaScript, con transizioni CSS per i cambi di traccia.
+Il sito è costruito in HTML,
+
+ CSS e JavaScript puro, senza framework esterni, organizzato in quattro file: index.html per la struttura, style.css per il design, script.js per tutta la logica di riproduzione e interazione, e scenes.js che contiene il database completo delle trascrizioni, con ogni frase associata ai propri timestamp di inizio e fine. La sincronizzazione avviene confrontando in tempo reale la posizione dell'audio con questi timestamp tramite un loop continuo. La riproduzione avviene tramite le Web Audio API del browser. L'interfaccia tipografica è gestita interamente via JavaScript, con transizioni CSS per i cambi di traccia.
 
 1.Database trascrizioni 
 
