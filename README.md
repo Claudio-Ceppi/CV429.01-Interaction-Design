@@ -1,3 +1,4 @@
+<img width="158" height="96" alt="NASA SAY" src="https://github.com/user-attachments/assets/afa8cbc2-e5d5-474a-b287-2f6262955d6d" />
 SUPSI 2026  
 Corso d’interaction design, CV429.01  
 Docenti: A. Gysin, G. Profeta  
