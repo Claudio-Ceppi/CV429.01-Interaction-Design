@@ -1,4 +1,3 @@
-<img width="158" height="96" alt="NASA SAY" src="https://github.com/user-attachments/assets/afa8cbc2-e5d5-474a-b287-2f6262955d6d" />
 SUPSI 2026  
 Corso d’interaction design, CV429.01  
 Docenti: A. Gysin, G. Profeta  
@@ -78,4 +77,4 @@ async function loadTrack(t) {
 ## Target e contesto d’uso
 NASA.SAY si rivolge principalmente a persone sorde o ipoacusiche, per le quali il testo sincronizzato è l'unico modo di accedere a queste trasmissioni storiche. Ma l'utente ideale è chiunque voglia rivivere questi momenti in modo contemplativo: seduto nel buio davanti a uno schermo, in silenzio, mentre le parole di Armstrong o Lovell appaiono grandi e lente, come monumenti tipografici.
 
-
+<img width="158" height="96" alt="NASA SAY" src="https://github.com/user-attachments/assets/afa8cbc2-e5d5-474a-b287-2f6262955d6d" />
