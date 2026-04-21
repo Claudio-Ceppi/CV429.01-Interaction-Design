@@ -77,4 +77,4 @@ async function loadTrack(t) {
 ## Target e contesto d’uso
 NASA.SAY si rivolge principalmente a persone sorde o ipoacusiche, per le quali il testo sincronizzato è l'unico modo di accedere a queste trasmissioni storiche. Ma l'utente ideale è chiunque voglia rivivere questi momenti in modo contemplativo: seduto nel buio davanti a uno schermo, in silenzio, mentre le parole di Armstrong o Lovell appaiono grandi e lente, come monumenti tipografici.
 
-[<img src="doc/munari.jpg" width="300" alt="Supplemento al dizionario italiano">]()
+
