@@ -651,7 +651,7 @@ async function fetchTLE() {
     const resp = await fetch('./data/active.tle', { cache: 'no-store' });
     if (resp.ok) {
       const text = await resp.text();
-      if (text.length > 100) {
+      if (text.length > 50000) {
         console.log('✓ TLE data caricato da file locale (./data/active.tle)');
         return text;
       }
