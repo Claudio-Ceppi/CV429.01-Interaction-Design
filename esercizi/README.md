@@ -2,15 +2,13 @@ SUPSI 2026
 Corso d’interaction design, CV429.01  
 Docenti: A. Gysin, G. Profeta  
 
-Progetto 1: La conquista dello spazio
-
-# NASA.SAY
+# Esercizi pre-progetti
 Autore: Claudio Ceppi \
 [NASA.SAY](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/NASA.SAY/files/)
 
 
 
-## Introduzione e tema
+## [NASA.SAY](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/NASA.SAY/files/)
 NASA.SAY è un archivio digitale interattivo che raccoglie e restituisce visivamente le dieci trasmissioni audio più iconiche della storia della NASA. Il progetto nasce dall'idea di rendere accessibili questi momenti storici a chi non può fruirli attraverso l'ascolto, in particolare alle persone sorde, offrendo una trascrizione sincronizzata e tradotta delle parole pronunciate, resa visibile in tempo reale sullo schermo attraverso una tipografia espressiva e di grande formato.
 Il sito presenta le tracce ordinate per popolarità culturale, da One Small Step di Neil Armstrong fino ai messaggi meno noti ma ugualmente significativi, accompagnando ogni audio con il testo completo di quanto viene detto, sincronizzato alla riproduzione. L'interfaccia è essenziale, in bianco e nero, e la parola scritta è il vero protagonista visivo dell'esperienza.
 
