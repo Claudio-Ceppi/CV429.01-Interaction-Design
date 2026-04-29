@@ -4,9 +4,6 @@ Docenti: A. Gysin, G. Profeta
 
 # Esercizi pre-progetti
 Autore: Claudio Ceppi \
-[NASA.SAY](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/esercizi/Es1/)
-
-
 
 ## [Esercizio 1](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/esercizi/Es1/)
 ISS tracciamento 2D
