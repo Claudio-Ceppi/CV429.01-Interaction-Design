@@ -22,20 +22,34 @@ jobs:
       
       - name: Download TLE Data
         run: |
-          # Scarica i dati TLE dai satelliti attivi da CelesTrak
-          curl -s "https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle" \
-            -H "User-Agent: Mozilla/5.0" \
-            -o data/active.tle
-          
-          # Verifica che il file non sia vuoto
-          if [ ! -s data/active.tle ]; then
-            echo "Errore: file TLE scaricato è vuoto!"
+          # Scarica in un file temporaneo: data/active.tle non viene toccato finché
+          # tutti i controlli non passano, così il sito continua a usare i dati buoni
+          curl -sL "https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle" \
+            -H "User-Agent: Mozilla/5.0 (compatible; satellite-tracker/1.0)" \
+            -o data/active.tle.tmp
+
+          FILE_SIZE=$(wc -c < data/active.tle.tmp)
+          echo "File size: ${FILE_SIZE} bytes"
+          echo "Number of lines: $(wc -l < data/active.tle.tmp) lines"
+
+          # Controlla se il server ha risposto con un messaggio di errore noto
+          if grep -q "GP data has not updated" data/active.tle.tmp; then
+            echo "Errore: CelesTrak ha risposto con 'GP data has not updated'."
+            echo "I dati attuali rimangono invariati. Nessun commit verrà eseguito."
             exit 1
           fi
-          
-          echo "✓ TLE data scaricato con successo"
-          echo "File size: $(wc -c < data/active.tle) bytes"
-          echo "Number of lines: $(wc -l < data/active.tle) lines"
+
+          # Fallisce se il file è più piccolo di 10KB (dati parziali o errore server)
+          if [ "${FILE_SIZE}" -lt 10240 ]; then
+            echo "Errore: file TLE scaricato troppo piccolo (${FILE_SIZE} bytes < 10KB)!"
+            echo "Contenuto del file:"
+            cat data/active.tle.tmp
+            exit 1
+          fi
+
+          # Tutti i controlli superati: sostituisce il file buono
+          mv data/active.tle.tmp data/active.tle
+          echo "✓ TLE data scaricato e verificato con successo"
       
       - name: Check for Changes
         id: check_changes
