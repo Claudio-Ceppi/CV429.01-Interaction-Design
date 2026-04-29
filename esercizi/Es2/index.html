@@ -645,16 +645,37 @@ async function initHandTracking() {
 
 // ─── FETCH TLE ───────────────────────────────────────────────────────────────
 async function fetchTLE() {
+  // Step 1: Prova a caricare dal file locale (aggiornato da GitHub Actions)
+  try {
+    setProgress(20, `FETCHING TLE DATA (local)...`);
+    const resp = await fetch('./data/active.tle', { cache: 'no-store' });
+    if (resp.ok) {
+      const text = await resp.text();
+      if (text.length > 100) {
+        console.log('✓ TLE data caricato da file locale (./data/active.tle)');
+        return text;
+      }
+    }
+  } catch(e) {
+    console.warn('⚠ File locale non disponibile:', e.message);
+  }
+
+  // Step 2: Se il file locale non è disponibile, prova i CORS proxy come fallback
+  console.warn('ℹ Fallback a CelesTrak tramite CORS proxy...');
   for (const url of PROXY_URLS) {
     try {
-      setProgress(20, `FETCHING TLE DATA...`);
+      setProgress(20, `FETCHING TLE DATA (remote)...`);
       const resp = await fetch(url, { cache: 'no-store' });
       if (!resp.ok) continue;
       const text = await resp.text();
       if (text.length < 100) continue;
+      console.log('✓ TLE data caricato da CelesTrak tramite CORS proxy');
       return text;
     } catch(e) { continue; }
   }
+
+  // Step 3: Se tutto fallisce, usa i dati di fallback
+  console.error('✗ Tutti i source TLE non disponibili! Usando dati demo di fallback.');
   throw new Error('All TLE sources failed');
 }
 
@@ -697,15 +718,31 @@ function animate() {
     try {
       tleText = await fetchTLE();
     } catch(e) {
-      // Use minimal fallback for demo
-      tleText = `ISS (ZARYA)\n1 25544U 98067A   24001.50000000  .00000000  00000-0  00000-0 0  9999\n2 25544  51.6416 247.4627 0006703 130.5360 325.0288 15.50377579000000`;
+      // Se tutti i metodi falliscono, mostra errore ma usa dati di fallback
+      console.error('❌ ERRORE CRITICO:', e.message);
+      console.warn('⚠ Utilizzo dati satelliti di fallback (demo mode)');
+      
+      // Mostra messaggio di errore all'utente
       document.getElementById('error-msg').style.display = 'block';
-      document.getElementById('error-msg').textContent = 'CORS proxy unavailable. Showing demo data.\nOpen index.html via a local server or configure a CORS proxy.';
-      setTimeout(() => { document.getElementById('error-msg').style.display = 'none'; }, 5000);
+      document.getElementById('error-msg').textContent = 
+        '⚠ AVVISO: Non è stato possibile caricare i dati TLE attuali.\n' +
+        'Modalità Demo con satelliti pre-caricati.\n' +
+        'Verifica che il file ./data/active.tle sia disponibile.';
+      
+      // Nascondi il messaggio dopo 8 secondi
+      setTimeout(() => { document.getElementById('error-msg').style.display = 'none'; }, 8000);
+      
+      // Usa dati di fallback minimali
+      tleText = `ISS (ZARYA)\n1 25544U 98067A   24001.50000000  .00000000  00000-0  00000-0 0  9999\n2 25544  51.6416 247.4627 0006703 130.5360 325.0288 15.50377579000000`;
     }
 
     setProgress(60, 'PARSING TLE DATA...');
     const tleData = parseTLE(tleText);
+
+    if (tleData.length === 0) {
+      console.error('❌ Nessun satellite valido trovato nei dati TLE!');
+      throw new Error('Parsed TLE data is empty');
+    }
 
     setProgress(80, `BUILDING ${tleData.length} SATELLITE OBJECTS...`);
     buildSatellites(tleData);
@@ -723,9 +760,9 @@ function animate() {
     animate();
 
   } catch(err) {
-    document.getElementById('loading-msg').textContent = 'ERROR: ' + err.message;
+    console.error('❌ ERRORE FATALE:', err);
+    document.getElementById('loading-msg').textContent = 'ERRORE: ' + err.message;
     document.getElementById('loading-bar').style.background = '#ff4466';
-    console.error(err);
   }
 })();
 </script>

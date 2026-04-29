@@ -1,0 +1,70 @@
+name: Update TLE Data
+
+on:
+  schedule:
+    # Esegui ogni 3 ore (0, 3, 6, 9, 12, 15, 18, 21 UTC)
+    - cron: '0 */3 * * *'
+  # Permetti il trigger manuale da GitHub Actions
+  workflow_dispatch:
+
+jobs:
+  update-tle:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
+      
+      - name: Download TLE Data
+        run: |
+          # Scarica i dati TLE dai satelliti attivi da CelesTrak
+          curl -s "https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle" \
+            -H "User-Agent: Mozilla/5.0" \
+            -o data/active.tle
+          
+          # Verifica che il file non sia vuoto
+          if [ ! -s data/active.tle ]; then
+            echo "Errore: file TLE scaricato è vuoto!"
+            exit 1
+          fi
+          
+          echo "✓ TLE data scaricato con successo"
+          echo "File size: $(wc -c < data/active.tle) bytes"
+          echo "Number of lines: $(wc -l < data/active.tle) lines"
+      
+      - name: Check for Changes
+        id: check_changes
+        run: |
+          if git diff --quiet data/active.tle; then
+            echo "No changes detected in TLE data"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected in TLE data"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and Push Changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Aggiungi il file modificato
+          git add data/active.tle
+          
+          # Crea il commit con timestamp
+          TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          git commit -m "chore: auto-update TLE data ($TIMESTAMP)"
+          
+          # Push to main branch
+          git push
+      
+      - name: Notify if No Changes
+        if: steps.check_changes.outputs.has_changes == 'false'
+        run: |
+          echo "ℹ TLE data è già aggiornato. Nessun commit necessario."
