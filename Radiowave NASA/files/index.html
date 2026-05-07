@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RADIOWAVE NASA — Visual Audio Archive</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ll">RADIOWAVE<br>NASA</div>
+  <div class="ls">Visual Audio Archive</div>
+  <div class="lbw"><div class="lb"></div></div>
+</div>
+
+<!-- CURSOR CUSTOM -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- WATER/GLITCH OVERLAY (pixelismo style) -->
+<canvas id="water-canvas"></canvas>
+
+<!-- ══════════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════════ -->
+<div id="home-page">
+
+  <section id="home-hero">
+    <!-- BIG HERO TITLE -->
+    <header id="home-header">
+      <div id="home-logo">
+        <span class="hl-nasa" data-text="RADIOWAVE">RADIOWAVE</span>
+        <span class="hl-say" data-text="NASA">NASA</span>
+      </div>
+      <div id="home-sub">Visual Audio Archive<br>The voices that shaped space,<br><span class="home-sub-nowrap">Now visible.</span></div>
+      <p class="home-description">RADIOWAVE NASA is an interactive archive visually restoring NASA's most iconic missions. Designed for accessibility, it features a curated ranking of 10 historical audio tracks transformed into real-time, large-format typography. A minimalist experience where the written word becomes the protagonist.</p>
+    </header>
+  </section>
+
+  <section id="home-tracks">
+    <!-- TRACK LIST — deadwater style -->
+    <nav id="home-tracklist">
+      <div id="htl-label">RANKING</div>
+      <ul id="htl-items"></ul>
+    </nav>
+  </section>
+
+  <!-- AMBIENT AUDIO status -->
+  <div id="ambient-status">♪ AMBIENT</div>
+
+</div><!-- /#home-page -->
+
+<!-- ══════════════════════════════════════════
+     TRACK PAGE (hidden by default)
+══════════════════════════════════════════ -->
+<div id="track-page" class="hidden">
+
+  <!-- LEFT SIDEBAR — compact tracklist -->
+  <aside id="sidebar">
+    <div id="sidebar-header">
+      <a id="back-btn" href="#">
+        <span class="back-arrow">←</span>
+        <div id="sidebar-logo">
+          <span class="sl-line" data-text="RADIOWAVE">RADIOWAVE</span>
+          <span class="sl-line" data-text="NASA">NASA</span>
+        </div>
+      </a>
+    </div>
+    <nav id="track-list"></nav>
+  </aside>
+
+  <!-- MAIN STAGE -->
+  <main id="stage">
+
+    <!-- META BAR (always visible at bottom) -->
+    <div id="meta-bar">
+      <div class="meta-item"><span class="meta-lbl">MISSION</span><span class="meta-val" id="tp-mission">—</span></div>
+      <div class="meta-item"><span class="meta-lbl">DATE</span><span class="meta-val" id="tp-date">—</span></div>
+      <div class="meta-item"><span class="meta-lbl">DISTANCE</span><span class="meta-val" id="tp-dist">—</span></div>
+      <div class="meta-item"><span class="meta-lbl">LATENCY</span><span class="meta-val" id="tp-latency">—</span></div>
+    </div>
+
+    <!-- SCENE CONTAINER -->
+    <div id="scene-container">
+      <canvas id="scene-canvas"></canvas>
+      <div id="particle-canvas"></div>
+      <div id="scene-dom"></div>
+
+      <!-- INFO ARROW — right side -->
+      <button id="info-arrow-btn" aria-label="Open info panel" aria-expanded="false" aria-controls="info-panel">
+        <span class="ia-arrow">→</span>
+        <span class="ia-label">INFO</span>
+      </button>
+    </div>
+
+    <!-- PROGRESS BAR (thin, top of meta bar) -->
+    <div id="progress-wrap">
+      <div id="progress-bar"></div>
+      <span id="progress-time">0:00</span>
+    </div>
+
+  </main>
+
+  <!-- INFO PANEL — slides in from right -->
+  <div id="info-panel" role="dialog" aria-modal="true" aria-label="Track Information" aria-hidden="true">
+    <button id="info-close-btn" aria-label="Close track information panel">←&nbsp;BACK</button>
+    <div id="info-panel-inner">
+
+      <section class="ip-section" data-section="context">
+        <div class="ip-section-label">CONTEXT</div>
+        <div class="ip-section-text" id="ip-context">—</div>
+      </section>
+
+      <section class="ip-section" data-section="world">
+        <div class="ip-section-label">WORLD</div>
+        <div class="ip-section-text" id="ip-world">—</div>
+      </section>
+
+      <section class="ip-section" data-section="music">
+        <div class="ip-section-label">MUSIC</div>
+        <div class="ip-section-text id-culture" id="ip-music">—</div>
+      </section>
+
+      <section class="ip-section" data-section="screen">
+        <div class="ip-section-label">FILM &amp; TV</div>
+        <div class="ip-section-text id-culture" id="ip-screen">—</div>
+      </section>
+
+    </div>
+  </div>
+
+</div><!-- /#track-page -->
+
+<!-- SWIPE FLASH -->
+<div id="swipe-flash"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="scenes.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
