@@ -4,14 +4,14 @@ Docenti: A. Gysin, G. Profeta
 
 Progetto 1: La conquista dello spazio
 
-# NASA.SAY
+# NASA SAY
 Autore: Claudio Ceppi \
 [NASASAY](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/NASA.SAY/files/)
 
 
 
 ## Introduzione e tema
-NASA.SAY è un archivio digitale interattivo che raccoglie e restituisce visivamente le dieci trasmissioni audio più iconiche della storia della NASA. Il progetto nasce dall'idea di rendere accessibili questi momenti storici a chi non può fruirli attraverso l'ascolto, in particolare alle persone sorde, offrendo una trascrizione sincronizzata e tradotta delle parole pronunciate, resa visibile in tempo reale sullo schermo attraverso una tipografia espressiva e di grande formato.
+NASA SAY è un archivio digitale interattivo che raccoglie e restituisce visivamente le dieci trasmissioni audio più iconiche della storia della NASA. Il progetto nasce dall'idea di rendere accessibili questi momenti storici a chi non può fruirli attraverso l'ascolto, in particolare alle persone sorde, offrendo una trascrizione sincronizzata e tradotta delle parole pronunciate, resa visibile in tempo reale sullo schermo attraverso una tipografia espressiva e di grande formato.
 Il sito presenta le tracce ordinate per popolarità culturale, da One Small Step di Neil Armstrong fino ai messaggi meno noti ma ugualmente significativi, accompagnando ogni audio con il testo completo di quanto viene detto, sincronizzato alla riproduzione. L'interfaccia è essenziale, in bianco e nero, e la parola scritta è il vero protagonista visivo dell'esperienza.
 
 
@@ -75,6 +75,6 @@ async function loadTrack(t) {
 ```
 
 ## Target e contesto d’uso
-NASA.SAY si rivolge principalmente a persone sorde o ipoacusiche, per le quali il testo sincronizzato è l'unico modo di accedere a queste trasmissioni storiche. Ma l'utente ideale è chiunque voglia rivivere questi momenti in modo contemplativo: seduto nel buio davanti a uno schermo, in silenzio, mentre le parole di Armstrong o Lovell appaiono grandi e lente, come monumenti tipografici.
+NASA SAY si rivolge principalmente a persone sorde o ipoacusiche, per le quali il testo sincronizzato è l'unico modo di accedere a queste trasmissioni storiche. Ma l'utente ideale è chiunque voglia rivivere questi momenti in modo contemplativo: seduto nel buio davanti a uno schermo, in silenzio, mentre le parole di Armstrong o Lovell appaiono grandi e lente, come monumenti tipografici.
 
 <img width="158" height="96" alt="NASA SAY" src="https://github.com/user-attachments/assets/afa8cbc2-e5d5-474a-b287-2f6262955d6d" />
