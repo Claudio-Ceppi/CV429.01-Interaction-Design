@@ -12,7 +12,7 @@
 const TRACKS = [
   {
     id:'ap_step', name:'One Small Step',
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/590331main_ringtone_smallStep.mp3',
+    url:'sounds/ona%20small%20step.mp3',
     info:{mission:'Apollo 11',displayDate:'20 JULY 1969',distance:'384,400 KM',latency:'1.3 SEC',
       context:"First words spoken on the lunar surface. Armstrong descends Eagle's ladder onto the Sea of Tranquility, July 20, 1969. The moment was watched live by an estimated 600 million people — a third of humanity at the time. The transmission carried 1.3 seconds of delay over 384,400 km of space.",
       world:'Cold War at its height. Vietnam War ongoing. 600 million people watch live on television. Nixon in the White House since January. The counterculture is at its peak — Woodstock happens just 25 days later. The USSR has lost the race but denies it publicly.',
@@ -31,7 +31,7 @@ const TRACKS = [
   },
   {
     id:'ap_eagle', name:'The Eagle Has Landed',
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/569462main_eagle_has_landed.mp3',
+    url:'sounds/the%20eagle%20has%20landed.mp3',
     info:{mission:'Apollo 11',displayDate:'20 JULY 1969',distance:'384,400 KM',latency:'1.3 SEC',
       context:'First words confirming lunar touchdown. Armstrong manually flew the Eagle past a boulder field with only 30 seconds of fuel remaining. The words were received at Mission Control with a delay of 1.3 seconds. Flight Director Gene Kranz later said it was the longest 30 seconds of his life.',
       world:'Space Race with the Soviet Union at its climax. It is the first time humans set foot on another world. Back home, 530,000 people are gathered at Woodstock. The Apollo program costs $25.4 billion — equivalent to $175 billion today.',
@@ -48,7 +48,7 @@ const TRACKS = [
   },
   {
     id:'ap13', name:"Houston, We've Had a Problem",
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/574928main_houston_problem.mp3',
+    url:'sounds/huston%20we%20had%20a%20problem.mp3',
     info:{mission:'Apollo 13',displayDate:'14 APRIL 1970',distance:'321,860 KM',latency:'1.1 SEC',
       context:"Oxygen tank 2 explodes 55 hours and 55 minutes into the mission, 321,860 km from Earth. The crew — Lovell, Haise, Swigert — is forced to use the lunar module Aquarius as a lifeboat for the 4-day return journey. NASA engineers improvise a CO₂ scrubber using only materials available on board. All three astronauts return safely April 17, 1970.",
       world:'Anti-war protests escalate globally. The Kent State massacre occurs just 3 weeks after splashdown. The mission becomes a symbol of improvisation, teamwork and the limits of technology. NASA calls it \"a successful failure.\"',
@@ -62,7 +62,7 @@ const TRACKS = [
   },
   {
     id:'ap8_xmas', name:'Merry Christmas',
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/581549main_Apollo-8_Merry-Christmas.mp3',
+    url:'sounds/merry%20christmas.mp3',
     info:{mission:'Apollo 8',displayDate:'24 DECEMBER 1968',distance:'384,400 KM',latency:'1.3 SEC',
       context:"Borman closes the Christmas Eve broadcast from lunar orbit — the first time humans had traveled to another world and looked back at Earth. The crew read from the Book of Genesis to a worldwide audience estimated at one billion people. Time magazine named the astronauts Men of the Year. The mission produced Earthrise, perhaps the most influential photograph ever taken.",
       world:"1968 was America's most turbulent year: MLK assassinated in April, RFK in June, Paris uprising in May, the Tet Offensive in Vietnam. Apollo 8 gave a wounded world something to believe in. Astronaut Bill Anders later said: 'We came all this way to explore the Moon, and the most important thing is that we discovered the Earth.'",
@@ -78,7 +78,7 @@ const TRACKS = [
   },
   {
     id:'mer_godspeed', name:'Godspeed, John Glenn',
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/582368main_Mercury-6_God-Speed.mp3',
+    url:'sounds/god%20speed%20jhon%20glenn.mp3',
     info:{mission:'Mercury-Atlas 6 · Friendship 7',displayDate:'20 FEBRUARY 1962',distance:'262 KM',latency:'0.001 SEC',
       context:"Backup astronaut Scott Carpenter's farewell as Glenn becomes the first American to orbit Earth, February 20, 1962. Glenn completed 3 orbits in 4 hours and 55 minutes. The mission had only 30 minutes of planned operations — everything else was improvised. A faulty sensor forced manual reentry, putting Glenn's life at serious risk for the final minutes.",
       world:'Cuban Missile Crisis looms 8 months away. The Berlin Wall was just built in August 1961. Soviet cosmonaut Yuri Gagarin had beaten the Americans into orbit by 10 months. The US was desperate for a win. Glenn became a national hero overnight — the biggest ticker-tape parade in New York since Lindbergh.',
@@ -92,7 +92,7 @@ const TRACKS = [
   },
   {
     id:'mer_orbit', name:'Orbit Comments',
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/582370main_mercury_Cooper_Orbit-Comments.mp3',
+    url:'sounds/orbit%20comments.mp3',
     info:{mission:'Mercury-Atlas 9 · Faith 7',displayDate:'15 MAY 1963',distance:'267 KM',latency:'0.001 SEC',
       context:'Final Mercury mission. Gordon Cooper completes 22 orbits and 34 hours in space — the longest US spaceflight to that date. He became the first American to sleep in space, and famously had to perform a fully manual reentry when the automatic systems failed. His accuracy was within 7 km of the target — better than the automated systems.',
       world:'Civil Rights movement intensifying — March on Washington happens 3 months later. JFK assassination is 6 months away. The US and USSR are neck-and-neck in the space race. Cooper is the last Mercury astronaut, closing a chapter that opened with Alan Shepard\'s 15-minute ballistic arc two years earlier.',
@@ -106,7 +106,7 @@ const TRACKS = [
   },
   {
     id:'jfk_moon', name:'We Choose the Moon',
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/586447main_JFKwechoosemoonspeech.mp3',
+    url:'sounds/we%20choose%20the%20moon.mp3',
     info:{mission:'Rice University Address',displayDate:'12 SEPTEMBER 1962',distance:'EARTH',latency:'—',
       context:"September 12, 1962. Kennedy delivers the speech to 35,000 people at Rice University in sweltering Texas heat. He commits the US to landing on the Moon before the decade ends — with no technology to do so yet. The speech sets in motion an effort that will employ 400,000 people. It remains the most audacious public promise ever made by a head of state.",
       world:'Cold War at its absolute height. The Cuban Missile Crisis begins 5 weeks later — the closest the world comes to nuclear war. The Berlin Wall is one year old. The Arms race consumes 10% of US GDP. Kennedy understands that the space race is a proxy for geopolitical supremacy, visible to every nation on Earth.',
@@ -123,7 +123,7 @@ const TRACKS = [
   },
   {
     id:'jfk_safely', name:'Return Him Safely',
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/591240main_JFKmoonspeech.mp3',
+    url:'sounds/return%20him%20safely.mp3',
     info:{mission:'Address to Congress',displayDate:'25 MAY 1961',distance:'EARTH',latency:'—',
       context:"May 25, 1961 — just 43 days after Yuri Gagarin orbited Earth and 20 days after Alan Shepard's 15-minute suborbital hop. Kennedy appears before a joint session of Congress and requests $531 million in additional funding. The goal: land a man on the Moon and return him safely before 1970. There is no plan. There is no technology. There is only will.",
       world:"Gagarin orbited Earth April 12. The Bay of Pigs invasion failed in April — a humiliation for Kennedy's young administration. Cold War paranoia is at its peak. The Soviets appear to be winning on every front. Kennedy's advisors told him the Moon was the one race the US could win. He bet everything on it.",
@@ -139,7 +139,7 @@ const TRACKS = [
   },
   {
     id:'sh_dust', name:'Dust It Off',
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/581097main_STS-1_Dust-it-Off.mp3',
+    url:'sounds/dust%20it%20off.mp3',
     info:{mission:'STS-1 Columbia',displayDate:'12 APRIL 1981',distance:'278 KM',latency:'0.001 SEC',
       context:'First Space Shuttle launch. April 12, 1981 — exactly 20 years to the day after Gagarin. Columbia had never been tested unmanned. Young and Crippen were the first crew to fly an untested spacecraft — something never done before or since. The Shuttle\'s thermal protection tiles were damaged on ascent; the outcome was only determined after landing.',
       world:"Reagan took office 83 days earlier. Cold War tensions rising sharply. Solidarity movement in Poland is being watched nervously by Moscow. America's mood is one of renewal after the malaise of the Carter years. Columbia's launch is watched by 500,000 people near the Cape, and broadcast globally as a signal of American resurgence.",
@@ -156,7 +156,7 @@ const TRACKS = [
   },
   {
     id:'sh_sally', name:'E-Ticket',
-    url:'https://www.nasa.gov/wp-content/uploads/2015/01/582362main_Sally-Ride_e-ticket.mp3',
+    url:'sounds/e-ticket.mp3',
     info:{mission:'STS-7 Challenger',displayDate:'18 JUNE 1983',distance:'307 KM',latency:'0.001 SEC',
       context:"Sally Ride becomes the first American woman in space on June 18, 1983 — six years after her application, chosen from 8,000 candidates. Her answer compares the launch to a Disneyland E-ticket, the highest-grade attraction of the era. Ride later said it was the most exhilarating experience of her life. She was 32 years old. The Soviet Union had sent Valentina Tereshkova 20 years earlier, in 1963.",
       world:"Reagan's \"Star Wars\" SDI proposal divides NATO allies. The Cold War arms race is intensifying. Ride's flight is framed internationally as proof of American gender progress — though she was frustrated by the sexism of press coverage, which fixated on her hair and makeup rather than her physics PhD. She flew again in 1984 and later founded Sally Ride Science to inspire girls toward STEM.",
