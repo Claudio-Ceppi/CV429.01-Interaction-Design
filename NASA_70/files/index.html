@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <title>NASA at 70 — Gravitas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Background atmosphere ───────────────────────────── -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-grain" aria-hidden="true"></div>
+
+  <!-- ─── Physics canvas ──────────────────────────────────── -->
+  <canvas id="stage" aria-label="Interactive archive map"></canvas>
+
+  <!-- ─── HUD: top bar ────────────────────────────────────── -->
+  <header class="hud-top">
+    <div class="hud-mark">
+      <img src="logo/logo.png" alt="Gravitas" class="hud-logo" />
+    </div>
+
+    <!-- Breadcrumb trail of mini-spheres -->
+    <nav id="trail" class="hud-trail" aria-label="Navigation trail"></nav>
+
+    <div class="hud-meta">
+      <span class="meta-row"><span class="meta-k">SYS</span><span class="meta-v" id="metaLevel">— · —</span></span>
+      <span class="meta-row"><span class="meta-k">N</span><span class="meta-v" id="metaCount">000</span></span>
+    </div>
+  </header>
+
+  <!-- ─── HUD: bottom legend ──────────────────────────────── -->
+  <footer class="hud-bot">
+    <span class="hud-hint" id="hudHint">drag · collide · click to descend</span>
+    <span class="hud-coord" id="hudCoord">archive / orbit zero</span>
+  </footer>
+
+  <!-- ─── Intro overlay (only at level 0) ─────────────────── -->
+  <div id="intro" class="intro">
+    <div class="intro-stack">
+      <div class="intro-eyebrow">
+        <span class="line"></span>
+        <span class="txt">SEVENTY YEARS — ARCHIVE 1958 / 2028</span>
+      </div>
+      <h1 class="intro-title">
+        <span class="word" data-d="0">NASA</span>
+        <span class="word" data-d="1">AT&nbsp;</span><span class="word stroked" data-d="2">SEVENTY</span>
+      </h1>
+      <p class="intro-lead">
+        An archive in <em>orbit</em>. <br />
+        Three filters, dozens of tags, hundreds of designs —<br />
+        all in one weightless field.
+      </p>
+      <p class="intro-cue" id="introCue">
+        <span class="cue-dot"></span> grab the violet body — release to enter
+      </p>
+    </div>
+  </div>
+
+  <!-- ─── Project info panel (slides in at level 3) ───────── -->
+  <aside id="panel" class="panel" aria-hidden="true">
+    <button class="panel-close" id="panelClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" width="22" height="22"><line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="20" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2.5"/></svg>
+    </button>
+    <div class="panel-scroll">
+      <div class="panel-tag" id="panelTag">—</div>
+      <h2 class="panel-title" id="panelTitle">—</h2>
+      <p class="panel-author" id="panelAuthor">—</p>
+      <div class="panel-figure" id="panelFigure"></div>
+      <p class="panel-desc" id="panelDesc">—</p>
+      <a class="panel-cta" id="panelCta" href="#" target="_blank" rel="noopener">
+        <span>visit project</span>
+        <svg viewBox="0 0 32 12" width="40" height="14"><line x1="0" y1="6" x2="26" y2="6" stroke="currentColor" stroke-width="2"/><polyline points="20,1 27,6 20,11" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ─── Loading overlay ─────────────────────────────────── -->
+  <div id="loader" class="loader">
+    <div class="loader-ring"></div>
+    <span class="loader-txt">tracking signal…</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
