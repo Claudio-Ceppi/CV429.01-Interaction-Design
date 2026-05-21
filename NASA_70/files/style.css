@@ -226,6 +226,8 @@ body.dragging * { cursor: grabbing !important; }
   color: var(--c-trace);
 }
 
+.hud-coord { display: none; }
+
 /* ── Intro overlay (only level 0) ────────────────────────── */
 .intro {
   position: fixed;
