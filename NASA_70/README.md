@@ -4,7 +4,7 @@ Docenti: A. Gysin, G. Profeta
 
 Progetto 2: Un piccolo passo per un uomo, un grande balzo per l'umanità
 
-# Radiowave NASA
+# NASA SEVENTY
 Autore: Claudio Ceppi \
 [NASA 70](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/NASA_70/files/)
 
