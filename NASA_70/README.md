@@ -1,3 +1,5 @@
+
+
 SUPSI 2026  
 Corso d’interaction design, CV429.01  
 Docenti: A. Gysin, G. Profeta  
@@ -42,6 +44,10 @@ La navigazione si articola su quattro livelli:
 - **Livello 3 — Progetti.** Cliccando un tag, ogni progetto diventa una sfera. Tutte le sfere hanno raggio uniforme, calcolato in modo che il titolo sia leggibile all'interno del cerchio senza troncature. Un pannello laterale si apre da destra con tag, titolo, autore, immagine, descrizione e link al progetto.
 
 Il drag è dotato di inerzia reale: lo storico degli ultimi frame del puntatore determina la velocità di lancio al rilascio. Click e drag sono distinti tramite soglia di spostamento (7 px) e durata (350 ms). Al livello progetti è disponibile lo zoom tramite pinch o scroll con Cmd.
+
+
+https://github.com/user-attachments/assets/0fef2514-5000-4963-946f-82de5624f6fc
+
 
 ---
 
@@ -108,3 +114,7 @@ spawnKickFrom(sx, sy) {
 ## Target e contesto d'uso
 
 NASA SEVENTY Gravitas si rivolge a designer, studenti e appassionati di esplorazione spaziale che vogliono navigare una raccolta di progetti digitali in modo non convenzionale. L'utente ideale è chi non si accontenta di una lista o di una griglia, ma vuole *abitare* l'archivio: trascinare, lanciare, collidere e solo alla fine, fermarsi su un progetto. Chi preferisce un approccio più analitico può passare alla modalità Educated per leggere la raccolta come una timeline; chi vuole semplicemente giocare può sfidare le sfere in modalità Game.
+
+
+<img width="661" height="288" alt="logo" src="https://github.com/user-attachments/assets/45165489-d1be-44cc-ab61-6c3aede6cc78" />
+
