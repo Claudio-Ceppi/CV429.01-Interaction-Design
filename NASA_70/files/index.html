@@ -18,43 +18,61 @@
 
   <!-- ─── HUD: top bar ────────────────────────────────────── -->
   <header class="hud-top">
-    <div class="hud-mark">
-      <img src="logo/logo.png" alt="Gravitas" class="hud-logo" />
+    <div id="logo-mark" class="logo-mark" aria-hidden="true">
+      <span class="word">NASA</span>
+      <span class="word stroked"><span class="sv sv-1">S</span><span class="sv sv-2">E</span><span class="sv sv-3">V</span><span class="sv sv-4">E</span><span class="sv sv-5">N</span><span class="sv sv-6">T</span><span class="sv sv-7">Y</span></span>
     </div>
-
     <!-- Breadcrumb trail of mini-spheres -->
     <nav id="trail" class="hud-trail" aria-label="Navigation trail"></nav>
 
-    <div class="hud-meta">
-      <span class="meta-row"><span class="meta-k">SYS</span><span class="meta-v" id="metaLevel">— · —</span></span>
-      <span class="meta-row"><span class="meta-k">N</span><span class="meta-v" id="metaCount">000</span></span>
-    </div>
   </header>
+
+  <!-- ─── Mode selector (appears after Start, under the logo) ── -->
+  <div id="modePanel" class="mode-panel" aria-hidden="true">
+    <div class="mode-title">Mode</div>
+    <div class="mode-list" role="radiogroup" aria-label="Display mode">
+      <button class="mode-btn is-active" data-mode="physical" role="radio" aria-checked="true">physical</button>
+      <button class="mode-btn" data-mode="educated" role="radio" aria-checked="false">educated</button>
+      <button class="mode-btn" data-mode="game" role="radio" aria-checked="false">game</button>
+    </div>
+  </div>
+
+  <!-- ─── About button (landing page only) ────────────────── -->
+  <button id="aboutBtn" class="about-btn" aria-haspopup="dialog" aria-controls="about">
+    <span>About</span>
+  </button>
 
   <!-- ─── HUD: bottom legend ──────────────────────────────── -->
   <footer class="hud-bot">
     <span class="hud-hint" id="hudHint">drag · collide · click to descend</span>
-    <span class="hud-coord" id="hudCoord">archive / orbit zero</span>
+    <span class="hud-coord" id="hudCoord"></span>
   </footer>
+
+  <!-- ─── Sound toggle (mute all audio: collisions + game music/voice) ─── -->
+  <button id="soundToggle" class="sound-toggle" aria-label="Toggle sound" aria-pressed="true">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <polygon class="spk" points="3,9 7,9 12,4 12,20 7,15 3,15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path class="wave" d="M14.8 9 a3.6 3.6 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      <path class="wave" d="M16.8 7 a6.2 6.2 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      <line class="slash" x1="14.5" y1="8" x2="20.5" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+  </button>
 
   <!-- ─── Intro overlay (only at level 0) ─────────────────── -->
   <div id="intro" class="intro">
     <div class="intro-stack">
       <div class="intro-eyebrow">
         <span class="line"></span>
-        <span class="txt">SEVENTY YEARS — ARCHIVE 1958 / 2028</span>
+        <span class="txt">SEVENTY YEARS — ARCHIVE 2028</span>
       </div>
       <h1 class="intro-title">
         <span class="word" data-d="0">NASA</span>
-        <span class="word" data-d="1">AT&nbsp;</span><span class="word stroked" data-d="2">SEVENTY</span>
+        <span class="word stroked" data-d="1"><span class="sv sv-1">S</span><span class="sv sv-2">E</span><span class="sv sv-3">V</span><span class="sv sv-4">E</span><span class="sv sv-5">N</span><span class="sv sv-6">T</span><span class="sv sv-7">Y</span></span>
       </h1>
       <p class="intro-lead">
-        An archive in <em>orbit</em>. <br />
-        Three filters, dozens of tags, hundreds of designs —<br />
-        all in one weightless field.
-      </p>
-      <p class="intro-cue" id="introCue">
-        <span class="cue-dot"></span> grab the violet body — release to enter
+        A collective archive of web projects<br />
+        created to mark NASA’s 70th anniversary.<br />
+        Each design, filtered by category and keyword.
       </p>
     </div>
   </div>
@@ -76,6 +94,134 @@
       </a>
     </div>
   </aside>
+
+  <!-- ─── Settings panel (slides in from the left) ────────── -->
+  <aside id="settings" class="settings" aria-hidden="true">
+    <div class="settings-panel">
+      <div class="set-slider" data-key="gravity">
+        <div class="set-label">Center gravity</div>
+        <div class="set-track"><span class="set-line"></span><span class="set-handle"></span></div>
+      </div>
+
+      <div class="set-slider" data-key="bounce">
+        <div class="set-label">Bounce amount</div>
+        <div class="set-track"><span class="set-line"></span><span class="set-handle"></span></div>
+      </div>
+
+      <div class="set-slider" data-key="wander">
+        <div class="set-label">Autonomous movement</div>
+        <div class="set-track"><span class="set-line"></span><span class="set-handle"></span></div>
+      </div>
+
+      <div class="set-slider" data-key="decel">
+        <div class="set-label">Deceleration</div>
+        <div class="set-track"><span class="set-line"></span><span class="set-handle"></span></div>
+      </div>
+
+      <button class="settings-reset" id="settingsReset">Reset</button>
+    </div>
+    <button id="settingsTab" class="settings-tab" aria-label="Toggle settings" aria-expanded="false">
+      <span>Settings</span>
+    </button>
+  </aside>
+
+  <!-- ─── Dev tool: multiply projects (slides in from the left) ─ -->
+  <aside id="multiply" class="settings multiply" aria-hidden="true">
+    <div class="settings-panel">
+      <div class="set-label">Multiply projects</div>
+      <div class="multiply-row">
+        <input id="multiplyInput" class="multiply-input" type="number" min="0" inputmode="numeric" value="1" aria-label="Project multiplier" />
+        <button id="multiplyOk" class="multiply-ok">OK</button>
+      </div>
+    </div>
+    <button id="multiplyTab" class="settings-tab" aria-label="Toggle multiply" aria-expanded="false">
+      <span>Sv.</span>
+    </button>
+  </aside>
+
+  <!-- ─── Game mode overlay (instructions + game over) ────── -->
+  <div id="game" class="game" aria-hidden="true">
+    <div class="game-card" id="gameIntro">
+      <h2 class="game-title">Dodge projects</h2>
+      <p class="game-lead">Move your cursor to steer the white dot and avoid the incoming
+         circles. Each circle that comes off the screen is worth one point. It becomes increasingly frenetic and variable.</p>
+      <div class="game-controls" id="gameControls" role="radiogroup" aria-label="Control method">
+        <button class="game-btn ctrl-btn" id="ctrlMouse"  data-control="mouse"  role="radio" aria-checked="false">Mouse</button>
+        <button class="game-btn ctrl-btn" id="ctrlFinger" data-control="finger" role="radio" aria-checked="false">Finger</button>
+        <button class="game-btn ctrl-btn" id="ctrlNose"   data-control="nose"   role="radio" aria-checked="false">Nose</button>
+      </div>
+      <button class="game-btn" id="gamePlay">Play</button>
+    </div>
+    <div class="game-card" id="gameOver" hidden>
+      <h2 class="game-title">You landed on a project</h2>
+      <p class="game-score">score: <span id="gameScore">0</span></p>
+      <div class="game-actions">
+        <button class="game-btn" id="gameSee">See project</button>
+        <button class="game-btn" id="gameRetry">Retry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live score while playing — discreet, centered at the top -->
+  <div id="gameHud" class="game-hud" aria-hidden="true">
+    <span class="game-hud-inner">
+      <span class="game-hud-label">Score</span>
+      <span id="gameScoreLive" class="game-hud-value">0</span>
+    </span>
+  </div>
+
+  <!-- Launch countdown overlay — big 3·2·1 synced to Sound/321.mp3 (pointer
+       passes through so the ball keeps following the cursor underneath). -->
+  <div id="gameCountdown" class="game-countdown" aria-hidden="true">
+    <span class="game-count-num"></span>
+  </div>
+
+  <!-- ─── About section (scroll-driven gravity scene) ─────── -->
+  <section id="about" class="about" aria-hidden="true" role="dialog" aria-label="About — NASA Seventy">
+    <!-- Physics layer: purple spheres fall + collide. Sits BEHIND the text,
+         which always stays crisp (spheres never overlap a block — they collide). -->
+    <canvas id="aboutStage" class="about-stage" aria-hidden="true"></canvas>
+
+    <button id="aboutClose" class="about-close" aria-label="Close about">
+      <svg viewBox="0 0 24 24" width="22" height="22"><line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="20" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2.5"/></svg>
+    </button>
+
+    <!-- Dedicated vertical scroller (the body stays overflow:hidden, untouched) -->
+    <div class="about-scroll" id="aboutScroll">
+
+      <!-- HERO: rigid white line, static spheres above it, title below -->
+      <header class="about-hero">
+        <span class="about-line" id="aboutLine" aria-hidden="true"></span>
+        <h2 class="about-hero-title" data-about-block>Dear&nbsp;Humans,<br/>Dear&nbsp;NASA&nbsp;Fans</h2>
+        <span class="about-hero-cue">scroll — release gravity</span>
+      </header>
+
+      <!-- TEXT STREAM: every [data-about-block] is registered as a static body -->
+      <div class="about-stream">
+        <article class="about-block about-block--l" data-about-block>
+          <span class="about-block-idx">01</span>
+          <p>NASA 70 is an interactive digital archive that gathers and visually presents the web projects created to mark NASA’s seventieth anniversary.</p>
+        </article>
+
+        <article class="about-block about-block--c" data-about-block>
+          <span class="about-block-idx">02</span>
+          <p>The archive is explored through a physical metaphor: navigation filters such as categories, tags and individual projects exist as celestial bodies in a gravitational field, draggable and animated by a continuous physics.</p>
+        </article>
+
+        <article class="about-block about-block--r" data-about-block>
+          <span class="about-block-idx">03</span>
+          <p>The projects are organized into three macro-categories: Cosmos, Knowledge and Craft. Descending through the levels spawns new bodies from the position of the previous one, like an orbital trajectory.</p>
+        </article>
+
+        <article class="about-block about-block--l" data-about-block>
+          <span class="about-block-idx">04</span>
+          <p>It speaks to designers, students and enthusiasts who want to inhabit the archive: to drag, to throw, to collide, and only at the very end, to settle on a single project. Or would you like to send us your project?</p>
+        </article>
+      </div>
+
+      <footer class="about-foot">NASA SEVENTY — ARCHIVE 2028</footer>
+    </div>
+  </section>
 
   <!-- ─── Loading overlay ─────────────────────────────────── -->
   <div id="loader" class="loader">

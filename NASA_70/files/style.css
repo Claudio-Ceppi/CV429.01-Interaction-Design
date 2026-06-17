@@ -91,6 +91,42 @@ body.dragging * { cursor: grabbing !important; }
 
 .hud-top > * { pointer-events: auto; }
 
+/* Logo mark = a faithful, scaled-down replica of .intro-title.
+   Same line-height, letter-spacing and per-letter margins, with the
+   text-stroke set proportionally (title is 2px @168px → ~0.5px @40px). */
+.logo-mark {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  line-height: 0.86;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  color: var(--c-trace);
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 200ms;
+}
+.logo-mark.is-visible { opacity: 1; pointer-events: auto; cursor: pointer; }
+
+.logo-mark .word { display: inline-block; }
+
+.logo-mark .stroked {
+  -webkit-text-stroke: 0.5px var(--c-trace);
+  color: transparent;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.logo-mark .stroked .sv { display: inline-block; }
+.logo-mark .stroked .sv-1 { margin-right: -0.05em; }
+.logo-mark .stroked .sv-2 { margin-right: 0em; }
+.logo-mark .stroked .sv-3 { margin-right: -0.02em; }
+.logo-mark .stroked .sv-4 { margin-right: -0.06em; }
+.logo-mark .stroked .sv-5 { margin-right: -0.04em; }
+.logo-mark .stroked .sv-6 { margin-right: 0.03em; }
+.logo-mark .stroked .sv-7 { margin-right: 0; }
+
 .hud-mark {
   display: flex;
   align-items: center;
@@ -123,6 +159,7 @@ body.dragging * { cursor: grabbing !important; }
 }
 
 .hud-trail {
+  grid-column: 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -142,12 +179,34 @@ body.dragging * { cursor: grabbing !important; }
   font-family: inherit;
   padding: 0;
   opacity: 0;
-  transform: translateY(-4px);
-  animation: trailIn 380ms cubic-bezier(.2,.7,.2,1) forwards;
+  transform: translateY(-14px) scale(0.94);
+  animation: trailIn 420ms cubic-bezier(.22,1,.36,1) forwards;
 }
 
 @keyframes trailIn {
-  to { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.trail-node.is-settled {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  animation: none;
+}
+
+@keyframes letterIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.trail-ltr {
+  display: inline-block;
+  opacity: 0;
+  animation: letterIn 90ms cubic-bezier(.22,1,.36,1) forwards;
+}
+
+@keyframes arrowGrow {
+  from { width: 0; opacity: 0; }
+  to   { width: 18px; opacity: 1; }
 }
 
 .trail-sphere {
@@ -172,10 +231,18 @@ body.dragging * { cursor: grabbing !important; }
 }
 
 .trail-arrow {
-  width: 18px;
+  width: 0;
   height: 1px;
   background: var(--c-trace-dim);
   display: inline-block;
+  opacity: 0;
+  animation: arrowGrow 300ms cubic-bezier(.22,1,.36,1) forwards;
+}
+
+.trail-arrow.is-settled {
+  width: 18px;
+  opacity: 1;
+  animation: none;
 }
 
 .hud-meta {
@@ -226,7 +293,122 @@ body.dragging * { cursor: grabbing !important; }
   color: var(--c-trace);
 }
 
-.hud-coord { display: none; }
+/* ── Sound toggle (collision audio mute) — minimal HUD control ── */
+.sound-toggle {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  z-index: 21;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--c-trace-dim);
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: 0.7;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity var(--t-fast), color var(--t-fast);
+}
+.sound-toggle:hover { color: var(--c-trace); opacity: 1; }
+.sound-toggle .slash { display: none; }
+.sound-toggle.is-muted { opacity: 0.45; }
+.sound-toggle.is-muted .wave  { display: none; }
+.sound-toggle.is-muted .slash { display: block; }
+
+/* ── Mode selector ───────────────────────────────────────────
+   A discreet thin-bordered panel, just under the logo. Hidden on the
+   landing screen; revealed (.is-ready) once the user clicks "Start". */
+.mode-panel {
+  position: fixed;
+  top: 116px;
+  left: 32px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 14px 16px;
+  background: var(--c-ground);
+  border: 1px solid var(--c-trace-fog);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-8px);
+  /* Fast base transition: governs the HIDE (going back home via the logo), so the
+     panel disappears quickly. The reveal is handled by a keyframe animation below. */
+  transition: opacity 150ms, transform 150ms;
+}
+.mode-panel.is-ready {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+  /* REVEAL after Start: driven by a keyframe animation, not a transition. A plain
+     transition can be skipped (the box "pops in") if the browser hasn't painted the
+     opacity:0 state before .is-ready is added in the same tick — an animation always
+     plays 0→1. Slow + soft ease-out; delayed 420ms so it follows the dev tabs.
+     fill-mode 'both' keeps it invisible during the delay and pinned at 1 after. */
+  animation: modePanelIn 760ms cubic-bezier(0.22, 0.61, 0.36, 1) 420ms both;
+}
+
+@keyframes modePanelIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.mode-title {
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-trace-dim);
+}
+
+.mode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.mode-btn {
+  position: relative;
+  align-self: flex-start;
+  padding: 0 0 0 14px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--c-trace-dim);
+  cursor: pointer;
+  transition: color var(--t-fast);
+}
+.mode-btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translateY(-50%);
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+.mode-btn:hover { color: var(--c-trace); }
+.mode-btn.is-active { color: var(--c-trace); }
+.mode-btn.is-active::before { opacity: 1; }
+/* Toglie il riquadro di focus di default del browser (visibile su Chrome quando si
+   naviga i progetti con le frecce): la modalità selezionata resta comunque indicata
+   dal colore acceso e dal quadratino ::before, quindi non si perde alcun riscontro. */
+.mode-btn:focus,
+.mode-btn:focus-visible { outline: none; }
 
 /* ── Intro overlay (only level 0) ────────────────────────── */
 .intro {
@@ -292,12 +474,24 @@ body.dragging * { cursor: grabbing !important; }
 .intro-title .stroked {
   -webkit-text-stroke: 2px var(--c-trace);
   color: transparent;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
+
+.intro-title .stroked .sv { display: inline-block; }
+/* spazio dopo ogni lettera — modifica margin-right per spaziatura individuale */
+.intro-title .stroked .sv-1 { margin-right: -0.05em; }
+.intro-title .stroked .sv-2 { margin-right: 0em; }
+.intro-title .stroked .sv-3 { margin-right: -0.02em; }
+.intro-title .stroked .sv-4 { margin-right: -0.06em; }
+.intro-title .stroked .sv-5 { margin-right: -0.04em; }
+.intro-title .stroked .sv-6 { margin-right: 0.03em; }
+.intro-title .stroked .sv-7 { margin-right: 1; }
 
 .intro-lead {
   font-weight: 300;
   font-size: clamp(15px, 1.5vw, 22px);
-  line-height: 1.45;
+  line-height: 1.1;
   color: var(--c-trace);
   max-width: 480px;
   opacity: 0;
@@ -393,11 +587,7 @@ body.dragging * { cursor: grabbing !important; }
 .panel-scroll::-webkit-scrollbar { width: 0; }
 
 .panel-tag {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--c-trace-dim);
+  display: none;
 }
 
 .panel-title {
@@ -417,7 +607,7 @@ body.dragging * { cursor: grabbing !important; }
 
 .panel-figure {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
   background: var(--c-trace-mist);
   overflow: hidden;
   position: relative;
@@ -478,6 +668,190 @@ body.dragging * { cursor: grabbing !important; }
 .panel-cta svg { transition: transform var(--t-fast); }
 .panel-cta:hover svg { transform: translateX(6px); }
 
+/* ── Settings panel (mirrors the project panel, from the left) ── */
+.settings {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  z-index: 30;
+  /* Hidden until "Start" is clicked: the whole thing — TAB INCLUDED — sits off-screen
+     to the left. When .is-ready is added it slides in left→right (the tab appears).
+     Same timing/easing as the project panel (--t-med). */
+  transform: translateY(-50%) translateX(calc(-100% - 72px));
+  transition: transform var(--t-med);
+}
+
+/* Ready (after Start), panel closed: only the tab pokes out at the left edge. */
+.settings.is-ready {
+  transform: translateY(-50%) translateX(-100%);
+}
+
+/* Open: the full panel is on screen. */
+.settings.is-ready.is-open {
+  transform: translateY(-50%) translateX(0);
+}
+
+.settings-panel {
+  width: 230px;
+  background: var(--c-ground);
+  border: 1px solid var(--c-trace-fog);
+  border-left: none;
+  padding: 28px 26px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* Vertical tab anchored to the panel's right edge — rides along with the slide. */
+.settings-tab {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--c-ground);
+  border: 1px solid var(--c-trace-fog);
+  border-left: none;
+  color: var(--c-trace);
+  font-family: inherit;
+  display: flex;
+  align-items: center;       /* centre the label vertically */
+  justify-content: center;   /* …and horizontally */
+  padding: 34px 18px;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+
+.settings-tab span {
+  display: block;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);   /* reads bottom-to-top */
+  line-height: 1;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.settings-tab:hover { background: var(--c-trace); color: var(--c-ground); }
+
+.set-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.set-label {
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-trace-dim);
+}
+
+.set-track {
+  position: relative;
+  height: 16px;
+  cursor: pointer;
+}
+
+.set-line {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--c-trace-dim);
+}
+
+.set-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--c-trace);
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  transition: box-shadow var(--t-fast);
+}
+
+.set-handle:hover { box-shadow: 0 0 0 4px var(--c-trace-fog); }
+.set-handle.is-dragging { cursor: grabbing; box-shadow: 0 0 0 5px var(--c-trace-fog); }
+
+.settings-reset {
+  align-self: flex-start;
+  margin-top: 6px;
+  background: none;
+  border: 1px solid var(--c-trace-fog);
+  color: var(--c-trace-dim);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+
+.settings-reset:hover {
+  background: var(--c-trace);
+  color: var(--c-ground);
+  border-color: var(--c-trace);
+}
+
+/* ── Multiply dev-tool (reuses .settings / .settings-tab / .settings-panel) ── */
+/* Sits well below the Settings panel's lower edge so the "Sv." tab is never
+   covered when Settings is open (that panel is tall: 4 sliders + Reset). */
+.multiply { top: calc(50% + 250px); }
+
+.multiply-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.multiply-input {
+  width: 72px;
+  background: none;
+  border: 1px solid var(--c-trace-fog);
+  color: var(--c-trace);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  padding: 8px 10px;
+  outline: none;
+  transition: border-color var(--t-fast);
+}
+
+.multiply-input:focus { border-color: var(--c-trace-dim); }
+
+/* strip the native number spinners */
+.multiply-input::-webkit-outer-spin-button,
+.multiply-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.multiply-input { -moz-appearance: textfield; }
+
+.multiply-ok {
+  background: none;
+  border: 1px solid var(--c-trace-fog);
+  color: var(--c-trace-dim);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+
+.multiply-ok:hover {
+  background: var(--c-trace);
+  color: var(--c-ground);
+  border-color: var(--c-trace);
+}
+
 /* ── Loader ──────────────────────────────────────────────── */
 .loader {
   position: fixed;
@@ -533,4 +907,394 @@ body.dragging * { cursor: grabbing !important; }
   .hud-coord { display: none; }
   .intro { padding: 0 7vw; }
   .panel-scroll { padding: 84px 24px 32px; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   GAME MODE  —  "Dodge the archive"
+   Additive only. The mini-game draws on the existing #stage canvas;
+   these styles cover just the HTML overlay (instructions + game over).
+   Palette / type / motion mirror the rest of the site: same tokens,
+   .intro-like fade, .panel-cta-like buttons.
+   ════════════════════════════════════════════════════════════ */
+.game {
+  position: fixed;
+  inset: 0;
+  z-index: 16;                       /* above canvas (5), below Mode panel (20) + drawer (30) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8vw;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-med);
+}
+.game.is-active { opacity: 1; }
+/* Cards take pointer events only when shown; the canvas behind keeps receiving
+   mouse moves (the player ball follows the cursor) during play. */
+.game.is-active .game-card { pointer-events: auto; }
+
+/* The breadcrumb trail is meaningless in the game — hide it while game mode is on
+   (the logo stays as the way back). Opacity keeps its grid slot, so the logo doesn't shift. */
+.hud-trail { transition: opacity var(--t-fast); }
+.hud-trail.game-hidden { opacity: 0; pointer-events: none; }
+
+.game-card {
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+  align-items: center;
+}
+.game-card[hidden] { display: none; }
+
+/* Intro card reads as a left-aligned editorial block (like the site's .intro-stack):
+   eyebrow, title and lead all flush-left. The game-over card stays centered. */
+#gameIntro { text-align: left; align-items: flex-start; }
+
+.game-eyebrow {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-trace-dim);
+}
+
+.game-title {
+  font-weight: 700;
+  font-size: clamp(36px, 6vw, 76px);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--c-trace);
+}
+
+.game-lead {
+  font-weight: 300;
+  font-size: clamp(15px, 1.5vw, 22px);
+  line-height: 1.2;
+  color: var(--c-trace);
+  max-width: 460px;
+  text-align: left;
+}
+
+.game-score {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-trace-dim);
+}
+
+/* Live score counter — fixed, centered at the top, deliberately discreet so it
+   never competes with the game. Same typographic language as the rest of the HUD
+   (uppercase, letter-spaced, --c-trace tones). Shown only while playing. */
+.game-hud {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 17;                      /* above canvas (5) + game backdrop (16), below Mode panel (20) */
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t-med);
+}
+.game-hud.is-on { opacity: 1; }
+.game-hud-inner {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.game-hud-label { color: var(--c-trace-dim); }
+.game-hud-value { color: var(--c-trace); font-variant-numeric: tabular-nums; }
+
+/* Launch countdown — the big 3·2·1 over the canvas. Pointer-transparent so the
+   white ball keeps tracking the cursor underneath while the numbers play. */
+.game-countdown {
+  position: fixed;
+  inset: 0;
+  z-index: 17;                       /* same band as the HUD: above canvas + game backdrop */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.game-countdown[aria-hidden="true"] { display: none; }
+.game-count-num {
+  font-weight: 700;
+  font-size: clamp(120px, 28vw, 360px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--c-trace);
+  font-variant-numeric: tabular-nums;
+}
+/* Re-added on every number change to retrigger the pop (scale + fade in). */
+.game-count-num.is-pop { animation: count-pop 0.95s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes count-pop {
+  0%   { opacity: 0; transform: scale(1.4); }
+  18%  { opacity: 1; transform: scale(1); }
+  78%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.92); }
+}
+
+.game-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+/* Primary button: a horizontal twin of .panel-cta. */
+/* Visual twin of the vertical .settings-tab — black with a faint border,
+   white text; inverts to white-on-black on hover. (No 90° rotation: this
+   button stays horizontal.) */
+.game-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  background: var(--c-ground);
+  border: 1px solid var(--c-trace-fog);
+  color: var(--c-trace);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.game-btn:hover {
+  background: var(--c-trace);
+  color: var(--c-ground);
+}
+/* "See project" once used: locks into the selected (white) state and stops
+   responding — the project can be summoned only on the first click. */
+.game-btn.is-selected,
+.game-btn.is-selected:hover {
+  background: var(--c-trace);
+  color: var(--c-ground);
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Control selector (Mouse / Finger / Nose): the chosen method holds the white
+   (selected) look until Play is pressed — but, unlike .is-selected, it stays
+   clickable so the player can switch between the three. */
+.game-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+/* The three method buttons are smaller than the primary Play button. */
+.ctrl-btn {
+  padding: 10px 18px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+}
+.game-btn.is-chosen,
+.game-btn.is-chosen:hover {
+  background: var(--c-trace);
+  color: var(--c-ground);
+}
+
+/* Play appears only once a control method has been chosen. */
+#gamePlay { display: none; }
+#gameIntro.is-ready #gamePlay { display: inline-flex; }
+
+/* ════════════════════════════════════════════════════════════
+   ABOUT  —  launcher button + scroll-driven gravity section
+   Additive only. Palette / type / line-weights mirror the rest of
+   the site; the button is a horizontal twin of the .settings-tab.
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Launcher: horizontal sibling of the vertical Settings tab ── */
+.about-btn {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  z-index: 22;                       /* above HUD (20), below loader (100) */
+  background: var(--c-ground);
+  border: 1px solid var(--c-trace-fog);
+  color: var(--c-trace);
+  font-family: inherit;
+  padding: 13px 22px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;              /* off-screen / hidden until on the landing page */
+  transition: background var(--t-fast), color var(--t-fast),
+              opacity var(--t-med), transform var(--t-med);
+}
+
+.about-btn span {
+  display: block;
+  line-height: 1;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.about-btn.is-shown {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.about-btn:hover { background: var(--c-trace); color: var(--c-ground); }
+
+/* ── Overlay ──────────────────────────────────────────────── */
+.about {
+  position: fixed;
+  inset: 0;
+  z-index: 40;                       /* above HUD + panels, below loader (100) */
+  background: var(--c-ground);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--t-med), visibility var(--t-med);
+}
+
+.about.is-open { opacity: 1; visibility: visible; }
+
+/* While About is open, lift the top bar above the overlay so the "NASA SEVENTY"
+   corner logo stays pinned top-left; hide the (empty) breadcrumb trail so only
+   the logo shows over the section. */
+.about-active .hud-top   { z-index: 50; }          /* above .about (40), below loader (100) */
+.about-active .hud-trail { opacity: 0; pointer-events: none; }
+
+/* During the logo's grow-back to the landing, lift the intro (which owns the
+   crisp, native-size big title) above the fading overlay, so the high-quality
+   flyLogoToHome animation is visible the instant it starts. */
+.intro.above-about { z-index: 45; }
+
+/* Physics canvas — fixed to the viewport, sits BEHIND the scrolling text */
+.about-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}
+
+/* Dedicated scroller (keeps the body's overflow:hidden untouched) */
+.about-scroll {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.about-scroll::-webkit-scrollbar { width: 0; }
+
+.about-close {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  z-index: 5;
+  background: var(--c-ground);
+  border: 1px solid var(--c-trace-fog);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-trace);
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.about-close:hover { background: var(--c-trace); color: var(--c-ground); }
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.about-hero {
+  position: relative;
+  min-height: 100vh;                 /* fills the first screen → scroll to reveal */
+  padding: 52vh 8vw 0;               /* title sits just below the 46vh line */
+}
+
+/* The rigid, geometric containment line — full-width, 2px, dissolves on scroll */
+.about-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46vh;
+  height: 2px;
+  background: var(--c-trace);
+  pointer-events: none;
+  transition: opacity var(--t-med);
+}
+.about-line.is-released { opacity: 0; }
+
+.about-hero-title {
+  width: fit-content;          /* box hugs the text → spheres rest on the title, not on empty space */
+  font-weight: 700;
+  font-size: clamp(40px, 8vw, 132px);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: var(--c-trace);
+}
+
+.about-hero-cue {
+  display: inline-block;
+  margin-top: 22px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-trace-dim);
+}
+
+/* ── Text stream: asymmetric, alternated blocks ──────────── */
+.about-stream {
+  position: relative;
+  padding: 12vh 8vw 16vh;
+  display: flex;
+  flex-direction: column;
+  gap: 24vh;                         /* generous gaps so spheres bounce between blocks */
+}
+
+.about-block {
+  position: relative;
+  max-width: 44ch;
+}
+
+.about-block--l { margin-right: auto; }                    /* left third  */
+.about-block--c { margin-left: auto; margin-right: auto; } /* centred     */
+.about-block--r { margin-left: auto; }                     /* right third */
+
+.about-block-idx {
+  display: block;
+  margin-bottom: 14px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--c-trace-dim);
+}
+
+.about-block p {
+  font-weight: 300;
+  font-size: clamp(16px, 1.7vw, 22px);
+  line-height: 1.32;
+  color: var(--c-trace);
+}
+
+.about-foot {
+  padding: 0 8vw 14vh;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-trace-dim);
+}
+
+@media (max-width: 700px) {
+  .about-btn { top: 16px; right: 20px; padding: 11px 18px; }
+  .about-hero { padding: 48vh 7vw 0; }
+  .about-stream { padding: 10vh 7vw 14vh; gap: 20vh; }
+  .about-block { max-width: 34ch; }
 }
