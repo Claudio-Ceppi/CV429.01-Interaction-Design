@@ -46,7 +46,11 @@ La navigazione si articola su quattro livelli:
 Il drag è dotato di inerzia reale: lo storico degli ultimi frame del puntatore determina la velocità di lancio al rilascio. Click e drag sono distinti tramite soglia di spostamento (7 px) e durata (350 ms). Al livello progetti è disponibile lo zoom tramite pinch o scroll con Cmd.
 
 
-https://github.com/user-attachments/assets/0fef2514-5000-4963-946f-82de5624f6fc
+
+
+https://github.com/user-attachments/assets/400e2220-62d3-43ac-ad17-0c236b70601e
+
+
 
 
 ---
