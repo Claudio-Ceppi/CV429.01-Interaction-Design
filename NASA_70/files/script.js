@@ -2979,15 +2979,15 @@ function makeFallbackProjects() {
       s.y += s.vy;
 
       // side walls
-      if (s.x - s.r < PAD)             { Sfx.hit(Math.abs(s.vx), Sfx.panOf(s.x, W), s.r); s.x = PAD + s.r;       s.vx =  Math.abs(s.vx) * REST; }
-      else if (s.x + s.r > W - PAD)    { Sfx.hit(Math.abs(s.vx), Sfx.panOf(s.x, W), s.r); s.x = W - PAD - s.r;   s.vx = -Math.abs(s.vx) * REST; }
+      if (s.x - s.r < PAD)             { s.x = PAD + s.r;       s.vx =  Math.abs(s.vx) * REST; }
+      else if (s.x + s.r > W - PAD)    { s.x = W - PAD - s.r;   s.vx = -Math.abs(s.vx) * REST; }
 
       // containment line — a floor only while it exists (pre-release)
-      if (s.y + s.r > lineY && s.vy > 0) { Sfx.hit(Math.abs(s.vy), Sfx.panOf(s.x, W), s.r); s.y = lineY - s.r;   s.vy = -Math.abs(s.vy) * REST; }
+      if (s.y + s.r > lineY && s.vy > 0) { s.y = lineY - s.r;   s.vy = -Math.abs(s.vy) * REST; }
 
       // viewport floor (after release the spheres pool at the bottom)
       const floor = H - PAD;
-      if (s.y + s.r > floor)           { Sfx.hit(Math.abs(s.vy), Sfx.panOf(s.x, W), s.r); s.y = floor - s.r;     s.vy = -Math.abs(s.vy) * REST; }
+      if (s.y + s.r > floor)           { s.y = floor - s.r;     s.vy = -Math.abs(s.vy) * REST; }
 
       // static colliders: the title + every text block
       for (const bl of blocks) resolveAABB(s, bl);
@@ -3058,7 +3058,6 @@ function makeFallbackProjects() {
     b.x += nx * overlap; b.y += ny * overlap;
     const vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
     if (vn > 0) return;
-    Sfx.hit(-vn, Sfx.panOf((a.x + b.x) / 2, W), Math.min(a.r, b.r));
     const j = -(1 + REST_BALL) * vn / 2;   // equal mass
     a.vx -= j * nx; a.vy -= j * ny;
     b.vx += j * nx; b.vy += j * ny;
@@ -3117,7 +3116,7 @@ function makeFallbackProjects() {
     s.x = cta.x + nx * min;             // eject the sphere to the ball's surface
     s.y = cta.y + ny * min;
     const vn = s.vx * nx + s.vy * ny;   // reflect only the inbound part of its velocity
-    if (vn < 0) { Sfx.hit(-vn, Sfx.panOf(s.x, W), s.r); s.vx -= (1 + REST_BALL) * vn * nx; s.vy -= (1 + REST_BALL) * vn * ny; }
+    if (vn < 0) { s.vx -= (1 + REST_BALL) * vn * nx; s.vy -= (1 + REST_BALL) * vn * ny; }
   }
 
   // The CTA only matters at the very foot of the page: it's present (and grabbable)
