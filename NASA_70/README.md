@@ -21,19 +21,17 @@ I progetti sono organizzati in tre macrocategorie **Cosmos**, **Knowledge** e **
 
 ## Riferimenti progettuali
 
-Sul piano visivo il progetto si colloca nella tradizione del design editoriale cosmico: sfondo nero assoluto, griglia sottile mascherata radialmente, tipografia Helvetica Bold e Light come unico sistema di lettura. L'assenza di decorazione è totale — la forma del cerchio e il testo del titolo sono gli unici elementi grafici. Sul piano dell'interazione, il riferimento è la simulazione fisica: ogni corpo ha massa, velocità, attrito, wandering autonomo e rimbalzo elastico nelle collisioni, avvicinandosi ai sistemi di particle simulation come linguaggio di navigazione dell'informazione.
+Sul piano visivo il progetto si colloca nella tradizione del design editoriale cosmico: sfondo nero assoluto, griglia sottile mascherata radialmente, tipografia Helvetica Bold e Light come unico sistema di lettura. L'assenza di decorazione è totale la forma del cerchio e il testo del titolo sono gli unici elementi grafici. Sul piano dell'interazione, il riferimento è la simulazione fisica: ogni corpo ha massa, velocità, attrito, wandering autonomo e rimbalzo elastico nelle collisioni, avvicinandosi ai sistemi di particle simulation come linguaggio di navigazione dell'informazione.
 
 ---
 
 ## Design dell'interfaccia e modalità di interazione
 
-L'interfaccia è composta da un canvas a pieno schermo e un HUD minimale fisso. Il canvas ospita i corpi fisici; l'HUD comprende un marcatore animato in alto a sinistra (il logo, cliccabile per tornare all'inizio), una scia di navigazione a mini-sfere al centro — che registra il percorso compiuto e permette di risalire e un hint contestuale in basso che si aggiorna a ogni livello per guidare l'interazione. Un pannello Settings laterale espone quattro parametri fisici regolabili in tempo reale (gravità centrale, rimbalzo, movimento autonomo, decelerazione). Un tasto sound toggle controlla l'audio globale.
+L'interfaccia è composta da un canvas a pieno schermo e un HUD minimale fisso. Il canvas ospita i corpi fisici; l'HUD comprende un marcatore animato in alto a sinistra (il logo, cliccabile per tornare all'inizio), una scia di navigazione a mini-sfere al centro che registra il percorso compiuto e permette di risalire e un hint contestuale in basso che si aggiorna a ogni livello per guidare l'interazione. Un pannello Settings laterale espone quattro parametri fisici regolabili in tempo reale (gravità centrale, rimbalzo, movimento autonomo, decelerazione). Un tasto sound toggle controlla l'audio globale.
 
 L'archivio è accessibile in tre modalità selezionabili:
 
-- **Physical** — la modalità di default. I corpi galleggiano liberamente nel campo, soggetti a gravità, wander autonomo e collisioni elastiche.
-- **Educated** — i progetti vengono disposti in una riga orizzontale ordinata per data, con un asse temporale sovrapposto. La navigazione avviene tramite scroll orizzontale e tasti freccia.
-- **Game** — modalità arcade: l'utente muove un punto bianco per schivare le sfere dei progetti in arrivo. Ogni sfera che esce dallo schermo vale un punto. Il gioco prevede un conto alla rovescia audio sincronizzato e una colonna sonora con effetti beat-reactive.
+**Physical** la modalità di default. I corpi galleggiano liberamente nel campo, soggetti a gravità, wander autonomo e collisioni elastiche. **Educated** i progetti vengono disposti in una riga orizzontale ordinata per data, con un asse temporale sovrapposto. La navigazione avviene tramite scroll orizzontale e tasti freccia. **Game** modalità arcade: l'utente muove un punto bianco per schivare le sfere dei progetti in arrivo. Ogni sfera che esce dallo schermo vale un punto. Il gioco prevede un conto alla rovescia audio sincronizzato e una colonna sonora con effetti beat-reactive.
 
 La navigazione si articola su quattro livelli:
 
