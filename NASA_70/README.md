@@ -32,6 +32,7 @@ L'interfaccia è composta da un canvas a pieno schermo e un HUD minimale fisso. 
 L'archivio è accessibile in tre modalità selezionabili:
 
 **Physical** la modalità di default. I corpi galleggiano liberamente nel campo, soggetti a gravità, wander autonomo e collisioni elastiche. **Educated** i progetti vengono disposti in una riga orizzontale ordinata per data, con un asse temporale sovrapposto. La navigazione avviene tramite scroll orizzontale e tasti freccia.
+
 **Game** modalità arcade: l'utente muove un punto bianco per schivare le sfere dei progetti in arrivo. Ogni sfera che esce dallo schermo vale un punto. Il gioco prevede un conto alla rovescia audio sincronizzato e una colonna sonora con effetti beat-reactive.
 
 La navigazione si articola su quattro livelli:
