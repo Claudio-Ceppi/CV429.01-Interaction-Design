@@ -13,9 +13,9 @@ Autore: Claudio Ceppi \
 
 ## Introduzione e tema
 
-NASA SEVENTY — Gravitas è un archivio digitale interattivo che raccoglie e restituisce visivamente i progetti web realizzati in occasione dei settant'anni della NASA. Il progetto nasce dall'idea di rendere esplorabile questo archivio collettivo attraverso una metafora fisica: i filtri di navigazione — categorie, tag e singoli progetti — esistono come corpi celesti in un campo gravitazionale, trascinabili, collidibili e animati da una fisica continua. Navigare l'archivio significa letteralmente muoversi nello spazio.
+NASA SEVENTY è un archivio digitale interattivo che raccoglie e restituisce visivamente i progetti web realizzati in occasione dei settant'anni della NASA. Il progetto nasce dall'idea di rendere esplorabile questo archivio collettivo attraverso una metafora fisica: i filtri di navigazione categorie, tag e singoli progetti esistono come corpi celesti in un campo gravitazionale, trascinabili, collidibili e animati da una fisica continua. Navigare l'archivio significa letteralmente muoversi nello spazio.
 
-I progetti sono organizzati in tre macrocategorie — **Cosmos**, **Knowledge** e **Craft** — ciascuna suddivisa in tag specifici. La discesa da categoria a tag a progetto non avviene attraverso schermate separate, ma come una trasformazione dello stesso universo visivo: ogni selezione genera nuovi corpi dalla posizione di quello precedente, rendendo il percorso leggibile come una traiettoria orbitale.
+I progetti sono organizzati in tre macrocategorie **Cosmos**, **Knowledge** e **Craft** ciascuna suddivisa in tag specifici. La discesa da categoria a tag a progetto non avviene attraverso schermate separate, ma come una trasformazione dello stesso universo visivo: ogni selezione genera nuovi corpi dalla posizione di quello precedente, rendendo il percorso leggibile come una traiettoria orbitale.
 
 ---
 
