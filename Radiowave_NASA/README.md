@@ -44,6 +44,12 @@ Una **meta-bar** sempre visibile in basso mostra MISSION, DATE, DISTANCE e LATEN
 
 Un **campo di particelle 3D** (Three.js) reagisce al volume dell'audio sullo sfondo: quasi invisibili nel silenzio, le particelle si espandono e accelerano con la voce.
 
+
+
+https://github.com/user-attachments/assets/b460c3aa-0b97-46e1-ac36-2aa3e1fda690
+
+
+
 ---
 
 ## Tecnologia usata
@@ -118,3 +124,7 @@ async function loadTrack(t) {
 ## Target e contesto d'uso
 
 RADIOWAVE NASA si rivolge principalmente a **persone sorde o ipoacusiche**, per le quali il testo sincronizzato è l'unico modo di accedere a queste trasmissioni storiche. Ma l'utente ideale è chiunque voglia rivivere questi momenti in modo contemplativo: seduto nel buio davanti a uno schermo, mentre le parole di Armstrong, Glenn o Kennedy appaiono grandi e lente, come monumenti tipografici.
+
+
+<img width="923" height="425" alt="Logo" src="https://github.com/user-attachments/assets/80670b98-3681-4eb2-b472-2f0aacf4a417" />
+
