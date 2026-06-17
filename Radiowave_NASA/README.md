@@ -8,6 +8,7 @@ Progetto 1: La conquista dello spazio
 Autore: Claudio Ceppi \
 [Radiowave NASA](https://claudio-ceppi.github.io/CV429.01-Interaction-Design/Radiowave_NASA/files/)
 
+---
 
 ## Introduzione e tema
 
