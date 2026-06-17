@@ -31,6 +31,10 @@
 <div id="home-page">
 
   <section id="home-hero">
+    <button id="sources-btn" aria-expanded="false" aria-controls="sources-panel">
+      <span class="ia-arrow">→</span>
+      <span class="ia-label">SOURCES</span>
+    </button>
     <!-- BIG HERO TITLE -->
     <header id="home-header">
       <div id="home-logo">
@@ -38,7 +42,7 @@
         <span class="hl-say" data-text="NASA">NASA</span>
       </div>
       <div id="home-sub">Visual Audio Archive<br>The voices that shaped space,<br><span class="home-sub-nowrap">Now visible.</span></div>
-      <p class="home-description">RADIOWAVE NASA is an interactive archive visually restoring NASA's most iconic missions. Designed for accessibility, it features a curated ranking of 10 historical audio tracks transformed into real-time, large-format typography. A minimalist experience where the written word becomes the protagonist.</p>
+      <p class="home-description">RADIOWAVE NASA is an interactive archive visually restoring NASA’s most iconic missions. Designed for accessibility, it features a curated ranking of 10 historical audio tracks transformed into real-time, large-format typography. A minimalist experience where the written word becomes the protagonist.</p>
     </header>
   </section>
 
@@ -53,7 +57,39 @@
   <!-- AMBIENT AUDIO status -->
   <div id="ambient-status">♪ AMBIENT</div>
 
+  <!-- SCROLL HINT -->
+  <div id="scroll-hint">
+    <span class="sh-text">SCROLL TO SEE</span>
+    <span class="ia-arrow sh-arrow">→</span>
+  </div>
+
 </div><!-- /#home-page -->
+
+<!-- SOURCES PANEL -->
+<div id="sources-panel" role="dialog" aria-modal="true" aria-label="Sources and Credits" aria-hidden="true">
+  <button id="sources-close-btn">←&nbsp;BACK</button>
+  <div id="sources-panel-inner">
+
+    <div class="sp-section">
+      <div class="sp-num">01</div>
+      <div class="sp-citation">National Aeronautics and Space Administration. (n.d.). <em>Historical sounds</em>. NASA. https://www.nasa.gov/historical-sounds/</div>
+      <p class="sp-description">This archive served as the primary content source for the project. All ten audio recordings used in RADIOWAVE NASA were retrieved from this platform, which collects historically significant transmissions from American space missions.</p>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-num">02</div>
+      <div class="sp-citation">Deadwater. (n.d.). <em>Home</em> [Digital portfolio]. https://deadwater.fr/</div>
+      <p class="sp-description">Served as the core visual inspiration for the minimalist layout hierarchy of the homepage and the specific interactive hover effects.</p>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-num">03</div>
+      <div class="sp-citation">Pixelismo. (n.d.). <em>Custom interactions</em> [Digital portfolio]. https://pixelismo.it/</div>
+      <p class="sp-description">Informed the technical implementation of the custom cursor and the fluid wave/water distortion effect tracking the mouse movement.</p>
+    </div>
+
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════
      TRACK PAGE (hidden by default)

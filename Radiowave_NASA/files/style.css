@@ -109,6 +109,7 @@ body.cursor-glitch #cursor-ring { border-color: red; animation: cursorGlitch .15
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
 }
 #home-tracks {
   height: 100vh;
@@ -174,7 +175,7 @@ body.cursor-glitch #cursor-ring { border-color: red; animation: cursorGlitch .15
   max-width: none;
   font-size: clamp(.65rem, 1.1vw, .82rem);
   font-weight: 300;
-  line-height: 1.8;
+  line-height: 1.4;
   color: rgba(255,255,255,.7);
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -185,7 +186,7 @@ body.cursor-glitch #cursor-ring { border-color: red; animation: cursorGlitch .15
   max-width: 450px;
   font-size: .95rem;
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.3;
   color: rgba(255,255,255,.45);
 }
 
@@ -196,7 +197,7 @@ body.cursor-glitch #cursor-ring { border-color: red; animation: cursorGlitch .15
   position: relative;
 }
 #htl-label {
-  font-size: .45rem;
+  font-size: .65rem;
   letter-spacing: .4em;
   color: rgba(255,255,255,.25);
   text-transform: uppercase;
@@ -282,6 +283,154 @@ body.cursor-glitch #cursor-ring { border-color: red; animation: cursorGlitch .15
 /* ── AMBIENT STATUS ──────────────────────────── */
 #ambient-status {
   display: none;
+}
+
+/* ── SCROLL HINT ─────────────────────────────── */
+#scroll-hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity .4s ease;
+}
+#scroll-hint.hint-hidden {
+  opacity: 0;
+}
+.sh-text {
+  font-family: var(--f);
+  font-size: .52rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.50);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.sh-arrow {
+  font-size: 1.7rem;
+  transform: rotate(90deg);
+  animation: sh-fade 2s ease-in-out infinite;
+}
+@keyframes sh-fade {
+  0%, 100% { opacity: .2; }
+  50%       { opacity: 1; }
+}
+
+/* ── SOURCES BUTTON ──────────────────────────── */
+#sources-btn {
+  position: absolute;
+  top: clamp(24px, 4vh, 48px);
+  right: 0;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 12px;
+  background: rgba(0,0,0,.6);
+  border: 1px solid var(--border);
+  border-right: none;
+  color: rgba(255,255,255,.55);
+  font-family: var(--f);
+  font-size: .42rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  backdrop-filter: blur(6px);
+}
+#sources-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
+#sources-btn.panel-open .ia-arrow { transform: rotate(180deg); }
+
+/* ════════════════════════════════════════════════
+   SOURCES PANEL
+════════════════════════════════════════════════ */
+#sources-panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(500px, 100vw);
+  background: rgba(0,0,0,.30);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(255,255,255,.15);
+  z-index: 15;
+  transform: translateX(100%);
+  transition: transform .65s var(--ease-expo);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#sources-panel.open {
+  transform: translateX(0);
+}
+#sources-close-btn {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.45);
+  font-family: var(--f);
+  font-size: .5rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  transition: color .2s;
+}
+#sources-close-btn:hover { color: #fff; }
+#sources-panel-inner {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.08) transparent;
+  padding-bottom: 80px;
+}
+#sources-panel-inner::-webkit-scrollbar { width: 2px; }
+#sources-panel-inner::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); }
+.sp-section {
+  padding: clamp(20px, 3.5vh, 36px) clamp(20px, 3.5vw, 36px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .55s var(--ease-expo), transform .55s var(--ease-expo);
+}
+.sp-section.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.sp-num {
+  font-family: var(--f-display);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  letter-spacing: .06em;
+  color: rgba(255,255,255,.18);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.sp-citation {
+  font-size: .68rem;
+  font-weight: 400;
+  line-height: 1.65;
+  color: rgba(255,255,255,.42);
+  letter-spacing: .015em;
+  margin-bottom: 12px;
+}
+.sp-citation em { font-style: italic; }
+.sp-description {
+  font-size: .78rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: rgba(255,255,255,.75);
+  letter-spacing: .02em;
 }
 
 /* ════════════════════════════════════════════════
@@ -509,14 +658,14 @@ body.cursor-glitch #cursor-ring { border-color: red; animation: cursorGlitch .15
 }
 .meta-item:last-child { border-right: none; }
 .meta-lbl {
-  font-size: .38rem;
+  font-size: .46rem;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: rgba(255,255,255,.50);
   font-weight: 700;
 }
 .meta-val {
-  font-size: .58rem;
+  font-size: .68rem;
   letter-spacing: .05em;
   color: #fff;
   font-weight: 500;
@@ -532,7 +681,9 @@ body.cursor-glitch #cursor-ring { border-color: red; animation: cursorGlitch .15
   position: fixed;
   top: 0; right: 0; bottom: 0;
   width: min(480px, 100vw);
-  background: #000;
+  background: rgba(0,0,0,.30);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-left: 1px solid rgba(255,255,255,.15);
   z-index: 200;
   transform: translateX(100%);
@@ -600,7 +751,7 @@ body.cursor-glitch #cursor-ring { border-color: red; animation: cursorGlitch .15
 .ip-section-text {
   font-size: .78rem;
   font-weight: 300;
-  line-height: 1.85;
+  line-height: 1.5;
   color: rgba(255,255,255,.75);
   letter-spacing: .02em;
   max-width: 100%;
@@ -623,9 +774,8 @@ body.cursor-glitch #cursor-ring { border-color: red; animation: cursorGlitch .15
 .id-culture a:hover { color: #fff; border-color: #fff; }
 .id-culture span {
   font-size: .75rem;
-  color: rgba(255,255,255,.55);
-  padding-left: 10px;
-  border-left: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.7);
+
 }
 
 /* ── SCENE WORDS (draggable) ─────────────────── */

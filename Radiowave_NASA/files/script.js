@@ -14,49 +14,48 @@ const TRACKS = [
     id:'ap_step', name:'One Small Step',
     url:'sounds/ona%20small%20step.mp3',
     info:{mission:'Apollo 11',displayDate:'20 JULY 1969',distance:'384,400 KM',latency:'1.3 SEC',
-      context:"First words spoken on the lunar surface. Armstrong descends Eagle's ladder onto the Sea of Tranquility, July 20, 1969. The moment was watched live by an estimated 600 million people — a third of humanity at the time. The transmission carried 1.3 seconds of delay over 384,400 km of space.",
-      world:'Cold War at its height. Vietnam War ongoing. 600 million people watch live on television. Nixon in the White House since January. The counterculture is at its peak — Woodstock happens just 25 days later. The USSR has lost the race but denies it publicly.',
+      context:"First words spoken on the lunar surface. Armstrong descends Eagle’s ladder onto the Sea of Tranquility, July 20, 1969. The moment was watched live by an estimated 600 million people, a third of humanity at the time. The radio transmission carried 1.3 seconds of delay over 384,400 km of space.",
+      world:'Cold War at its height. Vietnam War ongoing. 600 million people watch live on television. Nixon in the White House since January. The counterculture is at its peak Woodstock happens just 25 days later. The USSR has lost the race but denies it publicly.',
       music:[
         {label:'Michael Jackson — HIStory (1995)',url:'https://www.youtube.com/watch?v=_ksnxNfrKrw'},
         {label:'DJ Shadow ft. De La Soul — Rocket Fuel (2019)',url:'https://www.youtube.com/watch?v=8XK7nzAW_b0'},
         {label:'Ariana Grande — NASA (2019)',url:'https://www.youtube.com/watch?v=XwwJ2mZdpws'},
       ],
       culture:[
-        {label:'First Man (2018, dir. Chazelle) — climax of the film'},
-        {label:'Apollo 11 (2019, documentary) — restored archival audio'},
-        {label:"For All Mankind (Apple TV+, 2019–) — the series' entire premise hinges on this moment"},
-        {label:'From the Earth to the Moon (HBO, 1998, ep. "Mare Tranquillitatis")'},
+        {label:'First Man (2018,film, dir. Chazelle) — climax of the film'},
+        {label:'Apollo 11 (2019, documentary, dir. Todd Douglas Miller) — restored archival audio'},
+        {label:"For All Mankind (2019, TV series, dir. Ronald D. Moore) — the series‘ entire premise hinges on this moment"},
+        {label:'From the Earth to the Moon (1998, miniseries, dir. Tom Visser) — ep. "Mare Tranquillitatis"'},
       ]},
-    quote:"I'm going to step off the LM now. That's one small step for man, one giant leap for mankind.",
+    quote:"I’m going to step off the LM now. That’s one small step for man, one giant leap for mankind.",
   },
   {
     id:'ap_eagle', name:'The Eagle Has Landed',
     url:'sounds/the%20eagle%20has%20landed.mp3',
     info:{mission:'Apollo 11',displayDate:'20 JULY 1969',distance:'384,400 KM',latency:'1.3 SEC',
       context:'First words confirming lunar touchdown. Armstrong manually flew the Eagle past a boulder field with only 30 seconds of fuel remaining. The words were received at Mission Control with a delay of 1.3 seconds. Flight Director Gene Kranz later said it was the longest 30 seconds of his life.',
-      world:'Space Race with the Soviet Union at its climax. It is the first time humans set foot on another world. Back home, 530,000 people are gathered at Woodstock. The Apollo program costs $25.4 billion — equivalent to $175 billion today.',
+      world:'Space Race with the Soviet Union at its climax. It is the first time humans set foot on another world. Back home, 530,000 people are gathered at Woodstock. The Apollo program costs $25.4 billion equivalent to $175 billion today.',
       music:[
         {label:'DJ Shadow ft. De La Soul — Rocket Fuel (2019)',url:'https://www.youtube.com/watch?v=8XK7nzAW_b0'},
       ],
       culture:[
         {label:'Apollo 11 (2019, documentary, dir. Todd Douglas Miller) — the transmission heard in full'},
-        {label:'First Man (2018) — recreated verbatim'},
-        {label:'From the Earth to the Moon (HBO, 1998)'},
-        {label:'Moonshot (Disney+, 2022) — fictionalized retelling for younger audiences'},
+        {label:'First Man (2018, biopic, dir. Damien Chazelle) — recreated verbatim'},
+        {label:'From the Earth to the Moon (1998, miniseries)'},
+        {label:'Moonshot (2022, film) — fictionalized retelling for younger audiences'},
       ]},
     quote:'Houston, Tranquility Base here. The Eagle has landed.',
   },
   {
-    id:'ap13', name:"Houston, We've Had a Problem",
+    id:'ap13', name:"Houston, We’ve Had a Problem",
     url:'sounds/huston%20we%20had%20a%20problem.mp3',
     info:{mission:'Apollo 13',displayDate:'14 APRIL 1970',distance:'321,860 KM',latency:'1.1 SEC',
-      context:"Oxygen tank 2 explodes 55 hours and 55 minutes into the mission, 321,860 km from Earth. The crew — Lovell, Haise, Swigert — is forced to use the lunar module Aquarius as a lifeboat for the 4-day return journey. NASA engineers improvise a CO₂ scrubber using only materials available on board. All three astronauts return safely April 17, 1970.",
+      context:"Oxygen tank 2 explodes 55 hours and 55 minutes into the mission, 321,860 km from Earth. The crew Lovell, Haise, Swigert is forced to use the lunar module Aquarius as a lifeboat for the 4-day return journey. NASA engineers improvise a CO₂ scrubber using only materials available on board. All three astronauts return safely April 17, 1970.",
       world:'Anti-war protests escalate globally. The Kent State massacre occurs just 3 weeks after splashdown. The mission becomes a symbol of improvisation, teamwork and the limits of technology. NASA calls it \"a successful failure.\"',
       music:[],
       culture:[
-        {label:'Apollo 13 (1995, dir. Ron Howard) — Tom Hanks delivers the misquote "Houston, we have a problem", which eclipsed the original'},
-        {label:'The Simpsons S5E15 "Deep Space Homer" (1994) — Homer parodies the phrase in orbit'},
-        {label:'The idiom has since appeared in hundreds of films and series as shorthand for catastrophic failure'},
+        {label:'Apollo 13 (1995, film, dir. Ron Howard) — Tom Hanks delivers the misquote "Houston, we have a problem", which eclipsed the original'},
+        {label:'The Simpsons "Deep Space Homer" (1994, cartoon, dir. Bob Anderson) — S5E15, Homer parodies the phrase in orbit'},
       ]},
     quote:'Okay, Houston, we\'ve had a problem here. This is Houston. Say again, please. Ah, Houston, we\'ve had a problem. We\'ve had a Main B Bus Undervolt. Roger, Main B Bus Undervolt. Okay, Houston, we\'re looking at it.',
   },
@@ -64,15 +63,15 @@ const TRACKS = [
     id:'ap8_xmas', name:'Merry Christmas',
     url:'sounds/merry%20christmas.mp3',
     info:{mission:'Apollo 8',displayDate:'24 DECEMBER 1968',distance:'384,400 KM',latency:'1.3 SEC',
-      context:"Borman closes the Christmas Eve broadcast from lunar orbit — the first time humans had traveled to another world and looked back at Earth. The crew read from the Book of Genesis to a worldwide audience estimated at one billion people. Time magazine named the astronauts Men of the Year. The mission produced Earthrise, perhaps the most influential photograph ever taken.",
-      world:"1968 was America's most turbulent year: MLK assassinated in April, RFK in June, Paris uprising in May, the Tet Offensive in Vietnam. Apollo 8 gave a wounded world something to believe in. Astronaut Bill Anders later said: 'We came all this way to explore the Moon, and the most important thing is that we discovered the Earth.'",
+      context:"Borman closes the Christmas Eve broadcast from lunar orbit the first time humans had traveled to another world and looked back at Earth. The crew read from the Book of Genesis to a worldwide audience estimated at one billion people. Time magazine named the astronauts Men of the Year. The mission produced Earthrise, perhaps the most influential photograph ever taken.",
+      world:"1968 was America’s most turbulent year: MLK assassinated in April, RFK in June, Paris uprising in May, the Tet Offensive in Vietnam. Apollo 8 gave a wounded world something to believe in. Astronaut Bill Anders later said: 'We came all this way to explore the Moon, and the most important thing is that we discovered the Earth.'",
       music:[
         {label:'Bakermat — Uitzicht (2013)',url:'https://www.youtube.com/watch?v=JU1z3zfrzhQ'},
       ],
       culture:[
         {label:'From the Earth to the Moon (HBO, 1998, ep. "We Have Cleared the Tower") — broadcast recreated in full'},
         {label:'Earthrise (Netflix, 2018, documentary) — centered on the iconic photo taken during this mission'},
-        {label:'First Man (2018) — the mission is referenced as background context'},
+        {label:'First Man (2018, film, dir. Damien Chazelle) — the mission is referenced as background context'},
       ]},
     quote:'And from the crew of Apollo 8, we close with good night, good luck, a Merry Christmas and God bless all of you, all of you on the good Earth.',
   },
@@ -80,13 +79,13 @@ const TRACKS = [
     id:'mer_godspeed', name:'Godspeed, John Glenn',
     url:'sounds/god%20speed%20jhon%20glenn.mp3',
     info:{mission:'Mercury-Atlas 6 · Friendship 7',displayDate:'20 FEBRUARY 1962',distance:'262 KM',latency:'0.001 SEC',
-      context:"Backup astronaut Scott Carpenter's farewell as Glenn becomes the first American to orbit Earth, February 20, 1962. Glenn completed 3 orbits in 4 hours and 55 minutes. The mission had only 30 minutes of planned operations — everything else was improvised. A faulty sensor forced manual reentry, putting Glenn's life at serious risk for the final minutes.",
+      context:"Backup astronaut Scott Carpenter’s farewell as Glenn becomes the first American to orbit Earth, February 20, 1962. Glenn completed 3 orbits in 4 hours and 55 minutes. The mission had only 30 minutes of planned operations everything else was improvised. A faulty sensor forced manual reentry, putting Glenn’s life at serious risk for the final minutes.",
       world:'Cuban Missile Crisis looms 8 months away. The Berlin Wall was just built in August 1961. Soviet cosmonaut Yuri Gagarin had beaten the Americans into orbit by 10 months. The US was desperate for a win. Glenn became a national hero overnight — the biggest ticker-tape parade in New York since Lindbergh.',
       music:[],
       culture:[
-        {label:"The Right Stuff (1983, dir. Philip Kaufman) — Ed Harris as Glenn; the send-off is one of the film's most celebrated scenes"},
-        {label:'Hidden Figures (2016, dir. Theodore Melfi) — Glenn asks Katherine Johnson to verify the trajectory; his safe return is the dramatic payoff'},
-        {label:'The Right Stuff (Disney+, 2020 series) — scene recreated in the pilot'},
+        {label:"The Right Stuff (1983, film, dir. Philip Kaufman) — Ed Harris as Glenn; the send-off is one of the film’s most celebrated scenes"},
+        {label:'Hidden Figures (2016, film, dir. Theodore Melfi) — Glenn asks Katherine Johnson to verify the trajectory; his safe return is the dramatic payoff'},
+        {label:'The Right Stuff (2020, series, dir. Mark Lafferty) — scene recreated in the pilot'},
       ]},
     quote:'Godspeed, John Glenn.',
   },
@@ -94,13 +93,13 @@ const TRACKS = [
     id:'mer_orbit', name:'Orbit Comments',
     url:'sounds/orbit%20comments.mp3',
     info:{mission:'Mercury-Atlas 9 · Faith 7',displayDate:'15 MAY 1963',distance:'267 KM',latency:'0.001 SEC',
-      context:'Final Mercury mission. Gordon Cooper completes 22 orbits and 34 hours in space — the longest US spaceflight to that date. He became the first American to sleep in space, and famously had to perform a fully manual reentry when the automatic systems failed. His accuracy was within 7 km of the target — better than the automated systems.',
-      world:'Civil Rights movement intensifying — March on Washington happens 3 months later. JFK assassination is 6 months away. The US and USSR are neck-and-neck in the space race. Cooper is the last Mercury astronaut, closing a chapter that opened with Alan Shepard\'s 15-minute ballistic arc two years earlier.',
+      context:'Final Mercury mission. Gordon Cooper completes 22 orbits and 34 hours in space the longest US spaceflight to that date. He became the first American to sleep in space, and famously had to perform a fully manual reentry when the automatic systems failed. His accuracy was within 7 km of the target better than the automated systems.',
+      world:'Civil Rights movement intensifying March on Washington happens 3 months later. JFK assassination is 6 months away. The US and USSR are neck-and-neck in the space race. Cooper is the last Mercury astronaut, closing a chapter that opened with Alan Shepard\'s 15-minute ballistic arc two years earlier.',
       music:[],
       culture:[
-        {label:'The Right Stuff (1983, dir. Philip Kaufman) — Dennis Quaid portrays Cooper as the last Mercury astronaut, the film\'s closing act'},
-        {label:"The Right Stuff (Disney+, 2020 series) — Cooper's bravado and rivalry with the other astronauts are a central thread"},
-        {label:'Smithsonian Channel\'s "The Real Right Stuff" (2020, documentary) — archival footage and audio from Faith 7'},
+        {label:'The Right Stuff (1983, film, dir. Philip Kaufman) — Dennis Quaid portrays Cooper as the last Mercury astronaut, the film\'s closing act'},
+        {label:"The Right Stuff (2020, series, dir. Mark Lafferty) — Cooper’s bravado and rivalry with the other astronauts are a central thread"},
+        {label:'Smithsonian Channel’s "The Real Right Stuff" (2020, documentary) — archival footage and audio from Faith 7'},
       ]},
     quote:'This is a new and strange environment. First, this... certify yourself in orbit.',
   },
@@ -108,15 +107,15 @@ const TRACKS = [
     id:'jfk_moon', name:'We Choose the Moon',
     url:'sounds/we%20choose%20the%20moon.mp3',
     info:{mission:'Rice University Address',displayDate:'12 SEPTEMBER 1962',distance:'EARTH',latency:'—',
-      context:"September 12, 1962. Kennedy delivers the speech to 35,000 people at Rice University in sweltering Texas heat. He commits the US to landing on the Moon before the decade ends — with no technology to do so yet. The speech sets in motion an effort that will employ 400,000 people. It remains the most audacious public promise ever made by a head of state.",
-      world:'Cold War at its absolute height. The Cuban Missile Crisis begins 5 weeks later — the closest the world comes to nuclear war. The Berlin Wall is one year old. The Arms race consumes 10% of US GDP. Kennedy understands that the space race is a proxy for geopolitical supremacy, visible to every nation on Earth.',
+      context:"September 12, 1962. Kennedy delivers the speech to 35,000 people at Rice University in sweltering Texas heat. He commits the US to landing on the Moon before the decade ends with no technology to do so yet. The speech sets in motion an effort that will employ 400,000 people. It remains the most audacious public promise ever made by a head of state.",
+      world:'Cold War at its absolute height. The Cuban Missile Crisis begins 5 weeks later the closest the world comes to nuclear war. The Berlin Wall is one year old. The Arms race consumes 10% of US GDP. Kennedy understands that the space race is a proxy for geopolitical supremacy, visible to every nation on Earth.',
       music:[
         {label:'Gang Starr ft. Inspectah Deck — Above the Clouds (1998)',url:'https://www.youtube.com/watch?v=NqhNTA2VHqk'},
       ],
       culture:[
-        {label:"Hidden Figures (2016) — Kennedy's vision drives the entire narrative"},
-        {label:'First Man (2018) — speech audio plays over a montage of early NASA losses'},
-        {label:"JFK (1991, dir. Oliver Stone) — the presidency's ambition is a recurring theme"},
+        {label:"Hidden Figures (2016, film, dir. Theodore Melfi) — Kennedy’s vision drives the entire narrative"},
+        {label:'First Man (2018, film, dir. Damien Chazelle) — speech audio plays over a montage of early NASA losses'},
+        {label:"JFK (1991, film, dir. Oliver Stone) — the presidency’s ambition is a recurring theme"},
         {label:'We Choose the Moon (2009, interactive web project by JFK Library) — real-time recreation of Apollo 11'},
       ]},
     quote:'We choose to go to the moon in this decade and do the other things, not because they are easy, but because they are hard, because that goal will serve to organize and measure the best of our energies and skills, because that challenge is one that we are willing to accept, one we are unwilling to postpone, and one which we intend to win, and the others, too.',
@@ -125,15 +124,15 @@ const TRACKS = [
     id:'jfk_safely', name:'Return Him Safely',
     url:'sounds/return%20him%20safely.mp3',
     info:{mission:'Address to Congress',displayDate:'25 MAY 1961',distance:'EARTH',latency:'—',
-      context:"May 25, 1961 — just 43 days after Yuri Gagarin orbited Earth and 20 days after Alan Shepard's 15-minute suborbital hop. Kennedy appears before a joint session of Congress and requests $531 million in additional funding. The goal: land a man on the Moon and return him safely before 1970. There is no plan. There is no technology. There is only will.",
-      world:"Gagarin orbited Earth April 12. The Bay of Pigs invasion failed in April — a humiliation for Kennedy's young administration. Cold War paranoia is at its peak. The Soviets appear to be winning on every front. Kennedy's advisors told him the Moon was the one race the US could win. He bet everything on it.",
+      context:"May 25, 1961 just 43 days after Yuri Gagarin orbited Earth and 20 days after Alan Shepard’s 15-minute suborbital hop. Kennedy appears before a joint session of Congress and requests $531 million in additional funding. The goal: land a man on the Moon and return him safely before 1970. There is no plan. There is no technology. There is only will.",
+      world:"Gagarin orbited Earth April 12. The Bay of Pigs invasion failed in April a humiliation for Kennedy’s young administration. Cold War paranoia is at its peak. The Soviets appear to be winning on every front. Kennedy’s advisors told him the Moon was the one race the US could win. He bet everything on it.",
       music:[
         {label:'Gang Starr ft. Inspectah Deck — Above the Clouds (1998)',url:'https://www.youtube.com/watch?v=NqhNTA2VHqk'},
       ],
       culture:[
-        {label:"Thirteen Days (2000, dir. Roger Donaldson) — Kennedy's early presidency and Cold War brinkmanship"},
-        {label:"Jackie (2016, dir. Pablo Larraín) — Kennedy's legacy and the weight of his promises"},
-        {label:'The Crown (Netflix, S1, 2016) — the US space program is framed as a geopolitical challenge to Britain'},
+        {label:"Thirteen Days (2000, film, dir. Roger Donaldson) — Kennedy’s early presidency and Cold War brinkmanship"},
+        {label:"Jackie (2016, film, dir. Pablo Larraín) — Kennedy’s legacy and the weight of his promises"},
+        {label:'The Crown (2016, series, dir. Stephen Daldry) — the US space program is framed as a geopolitical challenge to Britain'},
       ]},
     quote:'I believe that this nation should commit itself to achieving the goal, before this decade is out, of landing a man on the moon and returning him safely to the earth.',
   },
@@ -141,32 +140,32 @@ const TRACKS = [
     id:'sh_dust', name:'Dust It Off',
     url:'sounds/dust%20it%20off.mp3',
     info:{mission:'STS-1 Columbia',displayDate:'12 APRIL 1981',distance:'278 KM',latency:'0.001 SEC',
-      context:'First Space Shuttle launch. April 12, 1981 — exactly 20 years to the day after Gagarin. Columbia had never been tested unmanned. Young and Crippen were the first crew to fly an untested spacecraft — something never done before or since. The Shuttle\'s thermal protection tiles were damaged on ascent; the outcome was only determined after landing.',
-      world:"Reagan took office 83 days earlier. Cold War tensions rising sharply. Solidarity movement in Poland is being watched nervously by Moscow. America's mood is one of renewal after the malaise of the Carter years. Columbia's launch is watched by 500,000 people near the Cape, and broadcast globally as a signal of American resurgence.",
+      context:'First Space Shuttle launch. April 12, 1981 exactly 20 years to the day after Gagarin. Columbia had never been tested unmanned. Young and Crippen were the first crew to fly an untested spacecraft something never done before or since. The Shuttle\'s thermal protection tiles were damaged on ascent; the outcome was only determined after landing.',
+      world:"Reagan took office 83 days earlier. Cold War tensions rising sharply. Solidarity movement in Poland is being watched nervously by Moscow. America’s mood is one of renewal after the malaise of the Carter years. Columbia’s launch is watched by 500,000 people near the Cape, and broadcast globally as a signal of American resurgence.",
       music:[
         {label:'Rush — Countdown (1982)',url:'https://www.youtube.com/watch?v=Pu2Xpvh22mQ'},
       ],
       culture:[
-        {label:"For All Mankind (Apple TV+, 2019–) — the Shuttle era features prominently in the alt-history timeline"},
-        {label:'Space Cowboys (2000, dir. Clint Eastwood) — shuttle operations are the film\'s backdrop'},
+        {label:"For All Mankind (2019, series, dir. Ronald D. Moore) — the Shuttle era features prominently in the alt-history timeline"},
+        {label:'Space Cowboys (2000, film, dir. Clint Eastwood) — shuttle operations are the film\'s backdrop'},
         {label:'The Challenger Disaster (BBC/Netflix, 2013) — dramatizes the institutional culture from STS-1\'s triumph to disaster'},
         {label:'Return to Space (Netflix, 2022, documentary) — draws a line from the Shuttle era to commercial spaceflight'},
       ]},
-    quote:"Welcome home, Columbia. Beautiful, beautiful. You might take a look at your G-suit... we're gonna dust it off first.",
+    quote:"Welcome home, Columbia. Beautiful, beautiful. You might take a look at your G-suit... we’re gonna dust it off first.",
   },
   {
     id:'sh_sally', name:'E-Ticket',
     url:'sounds/e-ticket.mp3',
     info:{mission:'STS-7 Challenger',displayDate:'18 JUNE 1983',distance:'307 KM',latency:'0.001 SEC',
-      context:"Sally Ride becomes the first American woman in space on June 18, 1983 — six years after her application, chosen from 8,000 candidates. Her answer compares the launch to a Disneyland E-ticket, the highest-grade attraction of the era. Ride later said it was the most exhilarating experience of her life. She was 32 years old. The Soviet Union had sent Valentina Tereshkova 20 years earlier, in 1963.",
-      world:"Reagan's \"Star Wars\" SDI proposal divides NATO allies. The Cold War arms race is intensifying. Ride's flight is framed internationally as proof of American gender progress — though she was frustrated by the sexism of press coverage, which fixated on her hair and makeup rather than her physics PhD. She flew again in 1984 and later founded Sally Ride Science to inspire girls toward STEM.",
+      context:"Sally Ride becomes the first American woman in space on June 18, 1983 six years after her application, chosen from 8,000 candidates. Her answer compares the launch to a Disneyland E-ticket, the highest-grade attraction of the era. Ride later said it was the most exhilarating experience of her life. She was 32 years old. The Soviet Union had sent Valentina Tereshkova 20 years earlier, in 1963.",
+      world:"Reagan’s \"Star Wars\" SDI proposal divides NATO allies. The Cold War arms race is intensifying. Ride’s flight is framed internationally as proof of American gender progress though she was frustrated by the sexism of press coverage, which fixated on her hair and makeup rather than her physics PhD. She flew again in 1984 and later founded Sally Ride Science to inspire girls toward STEM.",
       music:[
         {label:'Wilson Pickett — Mustang Sally (1966)',url:'https://www.youtube.com/watch?v=xFrGuyw1V8s'},
       ],
       culture:[
-        {label:"Fly (Prime Video, 2024, documentary) — full feature on Sally Ride's life and legacy, the quote is a centerpiece"},
-        {label:'Lucy in the Sky (2019, dir. Noah Hawley, Natalie Portman) — fictional astronaut directly inspired by Ride\'s cultural impact'},
-        {label:"Hidden Figures (2016) — Ride's 1983 mission is cited as the culmination of what the film's protagonists made possible"},
+        {label:"Fly (2024, documentary) — full feature on Sally Ride’s life and legacy, the quote is a centerpiece"},
+        {label:'Lucy in the Sky (2019, film, dir. Noah Hawley, Natalie Portman) — fictional astronaut directly inspired by Ride\'s cultural impact'},
+        {label:"Hidden Figures (2016, film, dir. Theodore Melfi) — Ride’s 1983 mission is cited as the culmination of what the film’s protagonists made possible"},
       ]},
     quote:'Have you ever been to Disneyland? Affirmative. That was definitely an E-ticket. Roger that, Sally.',
   },
@@ -761,3 +760,61 @@ let ambientStarted=false;
 
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function lerp(a,b,t){return a+(b-a)*t;}
+
+// Scroll hint visibility
+(()=>{
+  const hint=document.getElementById('scroll-hint');
+  if(!hint) return;
+  homePage.addEventListener('scroll',()=>{
+    hint.classList.toggle('hint-hidden', homePage.scrollTop > 10);
+  },{passive:true});
+})();
+
+/* ── 19. SOURCES PANEL ───────────────────────────────────────────────── */
+(()=>{
+  const sourcesBtn   = document.getElementById('sources-btn');
+  const sourcesPanel = document.getElementById('sources-panel');
+  const sourcesClose = document.getElementById('sources-close-btn');
+  if(!sourcesBtn || !sourcesPanel) return;
+
+  function openSources(){
+    sourcesPanel.classList.add('open');
+    sourcesPanel.setAttribute('aria-hidden','false');
+    sourcesBtn.setAttribute('aria-expanded','true');
+    sourcesBtn.classList.add('panel-open');
+    setTimeout(()=>{
+      sourcesPanel.querySelectorAll('.sp-section').forEach((s,i)=>{
+        setTimeout(()=>s.classList.add('revealed'), i*100);
+      });
+    },80);
+  }
+
+  function closeSources(){
+    sourcesPanel.classList.remove('open');
+    sourcesPanel.setAttribute('aria-hidden','true');
+    sourcesBtn.setAttribute('aria-expanded','false');
+    sourcesBtn.classList.remove('panel-open');
+    sourcesPanel.querySelectorAll('.sp-section').forEach(s=>s.classList.remove('revealed'));
+  }
+
+  sourcesBtn.addEventListener('click',()=>{
+    sourcesPanel.classList.contains('open') ? closeSources() : openSources();
+  });
+  sourcesClose.addEventListener('click', closeSources);
+
+  // Close on scroll down (to ranking section)
+  homePage.addEventListener('scroll', () => {
+    if (homePage.scrollTop > 10) closeSources();
+  }, { passive: true });
+
+  // Close when navigating to a track
+  document.getElementById('back-btn').addEventListener('click', closeSources);
+
+  // Close on outside click
+  document.addEventListener('click',e=>{
+    if(!sourcesPanel.classList.contains('open')) return;
+    const path=e.composedPath();
+    if(path.includes(sourcesPanel)||path.includes(sourcesBtn)) return;
+    closeSources();
+  });
+})();

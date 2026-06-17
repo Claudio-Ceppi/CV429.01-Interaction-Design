@@ -34,6 +34,26 @@ function buildLine(text, {size, weight=400, color='#fff', opacity=1, letterSpaci
   return el;
 }
 
+function buildSpeaker(text, leftPx, topPx, maxWidthPx, speakerFs) {
+  const el=document.createElement('div');
+  el.style.cssText=[
+    'font-family:"Roboto",sans-serif',
+    `font-size:${speakerFs}px`,
+    'font-weight:400',
+    'color:rgba(255,255,255,0.38)',
+    'letter-spacing:0.14em',
+    'line-height:1.4',
+    'white-space:nowrap',
+    'position:absolute',
+    `left:${leftPx}px`,
+    `top:${topPx}px`,
+    'opacity:0',
+    `max-width:${maxWidthPx}px`,
+  ].join(';');
+  el.textContent=text;
+  return el;
+}
+
 /* ── shared: audio-synced sequential reveal ─────────────────────
    lines = [{el, at}]  — at is the timestamp in seconds
    The rAF loop checks getCurTime() and reveals lines as audio passes their timestamp.
@@ -85,8 +105,8 @@ function layoutLines(dom, lineDefs, {startY=0.06, gapMult=1.55, lx=0.05}={}) {
    Tools: weight + size
    Accent: none (pure white gradation)
    Timestamps: audio is ~13s total
-     0.4s  "I'm going to step off the LM now."
-     3.2s  "That's one small step for man,"
+     0.4s  "I’m going to step off the LM now."
+     3.2s  "That’s one small step for man,"
      7.8s  "one giant leap for mankind."
 ═══════════════════════════════════════════════════════════════════ */
 SCENES.ap_step = {
@@ -96,12 +116,18 @@ SCENES.ap_step = {
 
     const fs=_cl(W*.044,22,44);
     const lines=[
-      {text:"I'm going to step off the LM now.", size:fs,        weight:300, color:'rgba(255,255,255,.50)', at:0.4},
-      {text:"That's one small step for man,",    size:fs*1.8,    weight:500, color:'rgba(255,255,255,.85)', at:3.2},
-      {text:"one giant leap for mankind.",        size:fs*2.6,    weight:900, color:'#fff',                  at:7.8},
+      {text:"I’m going to step off the LM now.", size:fs,        weight:300, color:'rgba(255,255,255,.50)', at:0.4},
+      {text:"That’s one small step for man,",    size:fs*1.8,    weight:500, color:'rgba(255,255,255,.85)', at:3.8},
+      {text:"one giant leap",        size:fs*2.6,    weight:900, color:'#fff',                  at:9.6},
+      {text:"for mankind.",        size:fs*2.6,    weight:900, color:'#fff',                  at:10.2},
     ];
 
-    const synced=layoutLines(dom,lines,{startY:.16,gapMult:1.7});
+    const synced=layoutLines(dom,lines,{startY:.16,gapMult:1.4});
+    const _s1l=synced[synced.length-1];
+    const _s1sfs=_cl(W*.020,10,18);
+    const _s1spk=buildSpeaker('— N. ARMSTRONG',W*.05,parseFloat(_s1l.el.style.top)+_s1l.el.offsetHeight+6,W*.90,_s1sfs);
+    dom.appendChild(_s1spk);
+    synced.push({el:_s1spk,at:_s1l.at});
     this._cancel=audioSync(synced);
   },
   destroy(){if(this._cancel)this._cancel();}
@@ -131,22 +157,27 @@ SCENES.ap_eagle = {
     ];
 
     const synced=layoutLines(dom,lines,{startY:.10,gapMult:1.65});
+    const _s2l=synced[synced.length-1];
+    const _s2sfs=_cl(W*.020,10,18);
+    const _s2spk=buildSpeaker('— N. ARMSTRONG',W*.05,parseFloat(_s2l.el.style.top)+_s2l.el.offsetHeight+6,W*.90,_s2sfs);
+    dom.appendChild(_s2spk);
+    synced.push({el:_s2spk,at:_s2l.at});
     this._cancel=audioSync(synced);
   },
   destroy(){if(this._cancel)this._cancel();}
 };
 
 /* ═══════════════════════════════════════════════════════════════════
-   SCENE 3 — HOUSTON, WE'VE HAD A PROBLEM
+   SCENE 3 â HOUSTON, WE’VE HAD A PROBLEM
    Tools: color + weight
    Accent: red on HOUSTON and PROBLEM
    Timestamps (audio ~18s):
      0.1s  "Okay, Houston,"
-     1.2s  "we've had a problem here."
+     1.2s  "we’ve had a problem here."
      4.5s  "This is Houston. Say again, please."
      9.0s  "Ah, Houston,"
-    10.2s  "we've had a problem."
-    12.5s  "We've had a Main B Bus Undervolt."
+    10.2s  "we’ve had a problem."
+    12.5s  "We’ve had a Main B Bus Undervolt."
 ═══════════════════════════════════════════════════════════════════ */
 SCENES.ap13 = {
   init(dom, canvas, ptr) {
@@ -154,27 +185,37 @@ SCENES.ap13 = {
     const W=dom.offsetWidth, H=dom.offsetHeight;
 
     const fs=_cl(W*.044,22,44);
+    const speakerFs=_cl(W*.020,10,18);
     const RED='#e03020';
 
-    /* Lines with optional HTML for accent words */
     const lineDefs=[
-      {text:'Okay, Houston,',                        size:fs,      weight:400, color:'rgba(255, 255, 255, 0.7)', at:0.1},
-      {text:"we've had a problem here.",              size:fs*1.5,  weight:700, color:'#fff',                  at:1.2,  accent:['problem']},
-      {text:'This is Houston. Say again, please.',    size:fs,      weight:400, color:'rgba(255,255,255,.55)', at:3},
-      {text:'Ah, Houston,',                           size:fs,      weight:400, color:'rgba(255,255,255,.70)', at:5.5},
-      {text:"we've had a problem.",                   size:fs*1.5,  weight:700, color:'#fff',                  at:5.9, accent:['problem']},
-      {text:"We've had a Main B Bus Undervolt.",       size:fs*.9,   weight:300, color:'rgba(255,255,255,.55)', at:7.5},
-      {text:"Roger, Main B Bus Undervolt.",       size:fs*.9,   weight:300, color:'rgba(255,255,255,.55)', at:10},
-      {text:"Okay, Houston, we're looking at it.",       size:fs*.9,   weight:300, color:'rgba(255,255,255,.55)', at:14},
-
+      {text:'Okay, Houston,',                        size:fs,        weight:400, color:'rgba(255, 255, 255, 0.7)', at:0.1},
+      {text:"we’ve had a problem here.",              size:fs*1.5,    weight:700, color:'#fff',                  at:1.2, accent:['problem']},
+      {isSpeaker:true, text:'— J. SWIGERT',           size:speakerFs, at:1.2},
+      {text:'This is Houston. Say again, please.',    size:fs,        weight:400, color:'rgba(255,255,255,.55)', at:3},
+      {isSpeaker:true, text:'— J. LOUSMA (CAPCOM)',  size:speakerFs, at:3},
+      {text:'Ah, Houston,',                           size:fs,        weight:400, color:'rgba(255,255,255,.70)', at:5.5},
+      {text:"we’ve had a problem.",                   size:fs*1.5,    weight:700, color:'#fff',                  at:5.9, accent:['problem']},
+      {text:"We’ve had a Main B Bus Undervolt.",       size:fs*.9,     weight:300, color:'rgba(255,255,255,.55)', at:7.5},
+      {isSpeaker:true, text:'— J. LOVELL',            size:speakerFs, at:7.5},
+      {text:"Roger, Main B Bus Undervolt.",            size:fs*.9,     weight:300, color:'rgba(255,255,255,.55)', at:10},
+      {text:"Okay, Houston, we’re looking at it.",     size:fs*.9,     weight:300, color:'rgba(255,255,255,.55)', at:14},
+      {isSpeaker:true, text:'— J. LOUSMA (CAPCOM)',  size:speakerFs, at:14},
     ];
 
-    /* Auto-scale gap */
     const _ap13AvailH = H*0.92 - 16;
-    const _ap13TotalH = lineDefs.reduce((s,d)=>s+d.size*1.55,0);
+    const _ap13TotalH = lineDefs.reduce((s,d)=>s+(d.isSpeaker?d.size*2.5:d.size*1.55),0);
     const _ap13Gap = _ap13TotalH > _ap13AvailH ? 1.55*(_ap13AvailH/_ap13TotalH) : 1.55;
     let y=H*.06;
+    let _ap13PrevEl=null;
     const synced=lineDefs.map(d=>{
+      if(d.isSpeaker){
+        const speakerY=_ap13PrevEl?parseFloat(_ap13PrevEl.style.top)+_ap13PrevEl.offsetHeight+4:y;
+        const el=buildSpeaker(d.text,W*.05,speakerY,W*0.90,d.size);
+        dom.appendChild(el);
+        y=speakerY+d.size*2.5;
+        return {el,at:d.at||0};
+      }
       const el=document.createElement('div');
       el.style.cssText=[
         'font-family:"Roboto",sans-serif',
@@ -184,7 +225,6 @@ SCENES.ap13 = {
         'line-height:1.25','white-space:normal','position:absolute',
         `left:${W*.05}px`,`top:${y}px`,'opacity:0',
       ].join(';');
-      /* Color accent words */
       if(d.accent){
         let html=d.text;
         d.accent.forEach(w=>{
@@ -199,6 +239,7 @@ SCENES.ap13 = {
       dom.appendChild(el);
       const ox=W*.05,oy=y;
       setTimeout(()=>makeDraggable(el,ox,oy),(d.at||0)*1000+800);
+      _ap13PrevEl=el;
       y+=d.size*_ap13Gap;
       return {el,at:d.at||0};
     });
@@ -231,13 +272,18 @@ SCENES.ap8_xmas = {
     const lines=[
       {text:'And from the crew of Apollo 8,',   size:fs,      weight:400, color:'rgba(255,255,255,.60)', at:0.4},
       {text:'we close with good night,',         size:fs*1.3,  weight:500, color:'rgba(255,255,255,.78)', at:3.0},
-      {text:'good luck,',                        size:fs*1.3,  weight:500, color:'rgba(255,255,255,.78)', at:5.5},
+      {text:'good luck,',                        size:fs*1.3,  weight:500, color:'rgba(255,255,255,.78)', at:5.3},
       {text:'a Merry Christmas',                 size:fs*1.8,  weight:700, color:GOLD,                    at:6.8},
-      {text:'and God bless all of you,',          size:fs*1.1,  weight:400, color:'rgba(255,255,255,.70)', at:8.8},
-      {text:'all of you on the good Earth.',      size:fs*1.5,  weight:700, color:'#fff',                  at:11.5},
+      {text:'and God bless all of you,',          size:fs*1.1,  weight:400, color:'rgba(255,255,255,.70)', at:8.4},
+      {text:'all of you on the good Earth.',      size:fs*1.5,  weight:700, color:'#fff',                  at:10.3},
     ];
 
     const synced=layoutLines(dom,lines,{startY:.06,gapMult:1.58});
+    const _s4l=synced[synced.length-1];
+    const _s4sfs=_cl(W*.020,10,18);
+    const _s4spk=buildSpeaker('— F. BORMAN',W*.05,parseFloat(_s4l.el.style.top)+_s4l.el.offsetHeight+6,W*.90,_s4sfs);
+    dom.appendChild(_s4spk);
+    synced.push({el:_s4spk,at:_s4l.at});
     this._cancel=audioSync(synced);
   },
   destroy(){if(this._cancel)this._cancel();}
@@ -259,10 +305,15 @@ SCENES.mer_godspeed = {
     const fs=_cl(W*.060,30,60);
     const lines=[
       {text:'Godspeed,',    size:fs,    weight:400, color:'rgba(255,255,255,.65)', at:0.5},
-      {text:'John Glenn.',  size:fs*2.8,weight:900, color:'#fff',                  at:2.0},
+      {text:'John Glenn.',  size:fs*2.8,weight:900, color:'#fff',                  at:1.3},
     ];
 
     const synced=layoutLines(dom,lines,{startY:.28,gapMult:1.7});
+    const _s5l=synced[synced.length-1];
+    const _s5sfs=_cl(W*.020,10,18);
+    const _s5spk=buildSpeaker('— S. CARPENTER',W*.05,parseFloat(_s5l.el.style.top)+_s5l.el.offsetHeight+6,W*.90,_s5sfs);
+    dom.appendChild(_s5spk);
+    synced.push({el:_s5spk,at:_s5l.at});
     this._cancel=audioSync(synced);
   },
   destroy(){if(this._cancel)this._cancel();}
@@ -298,6 +349,7 @@ SCENES.mer_orbit = {
     const _orbitTotalH = lineDefs.reduce((s,d)=>s+d.size*1.7,0);
     const _orbitGap = _orbitTotalH > _orbitAvailH ? 1.7*(_orbitAvailH/_orbitTotalH) : 1.7;
     let y=_orbitStartY;
+    let _orbitLastY=_orbitStartY, _orbitLastSize=fs, _orbitLastEl=null;
     const synced=lineDefs.map(d=>{
       const el=document.createElement('div');
       el.style.cssText=[
@@ -315,14 +367,17 @@ SCENES.mer_orbit = {
         el.innerHTML=html;
       } else { el.textContent=d.text; }
       el.style.maxWidth=(W*0.90)+'px';
-      el.style.maxWidth=(W*0.90)+'px';
       dom.appendChild(el);
       const ox=W*.05,oy=y;
       setTimeout(()=>makeDraggable(el,ox,oy),(d.at||0)*1000+800);
+      _orbitLastY=y; _orbitLastSize=d.size; _orbitLastEl=el;
       y+=d.size*_orbitGap;
       return {el,at:d.at||0};
     });
-
+    const _s6sfs=_cl(W*.020,10,18);
+    const _s6spk=buildSpeaker('— J. GLENN',W*.05,_orbitLastY+_orbitLastEl.offsetHeight+6,W*.90,_s6sfs);
+    dom.appendChild(_s6spk);
+    synced.push({el:_s6spk,at:synced[synced.length-1].at});
     this._cancel=audioSync(synced);
   },
   destroy(){if(this._cancel)this._cancel();}
@@ -361,7 +416,7 @@ SCENES.jfk_moon = {
       {text:'in this decade',                        at:1.6},
       {text:'and do the other things,',              at:3.0},
       {text:'not because they are easy,',            at:5.0},
-      {text:'but because they are hard,',            at:7.2},
+      {text:'but because they are hard,',            at:7.0},
       {text:'because that goal will serve',          at:9.8},
       {text:'to organize and measure',               at:11.5},
       {text:'the best of our energies and skills,',  at:13.2},
@@ -377,6 +432,7 @@ SCENES.jfk_moon = {
     const _jfkTotalH = textLines.reduce((s,_)=>s+fs*1.52,0);
     const _jfkGap = _jfkTotalH > _jfkAvailH ? 1.52*(_jfkAvailH/_jfkTotalH) : 1.52;
     let y=H*.03;
+    let _jfkLastY=H*.03, _jfkLastEl=null;
     const synced=textLines.map(d=>{
       const el=document.createElement('div');
       el.style.cssText=[
@@ -386,7 +442,6 @@ SCENES.jfk_moon = {
         'line-height:1.25','white-space:normal','position:absolute',
         `left:${W*.05}px`,`top:${y}px`,'opacity:0',
       ].join(';');
-      /* Highlight key words */
       let html=d.text;
       keyWords.forEach(w=>{
         const re=new RegExp(`\\b(${w})\\b`,'g');
@@ -397,10 +452,14 @@ SCENES.jfk_moon = {
       dom.appendChild(el);
       const ox=W*.05,oy=y;
       setTimeout(()=>makeDraggable(el,ox,oy),(d.at||0)*1000+800);
+      _jfkLastY=y; _jfkLastEl=el;
       y+=fs*_jfkGap;
       return {el,at:d.at||0};
     });
-
+    const _s7sfs=_cl(W*.020,10,18);
+    const _s7spk=buildSpeaker('— J. F. KENNEDY',W*.05,_jfkLastY+_jfkLastEl.offsetHeight+6,W*.90,_s7sfs);
+    dom.appendChild(_s7spk);
+    synced.push({el:_s7spk,at:synced[synced.length-1].at});
     this._cancel=audioSync(synced);
   },
   destroy(){if(this._cancel)this._cancel();}
@@ -427,15 +486,20 @@ SCENES.jfk_safely = {
     const fs=_cl(W*.044,22,44);
     const lines=[
       {text:'I believe that this nation',       size:fs,      weight:400, color:'rgba(255,255,255,.60)', at:0.1},
-      {text:'should commit itself',              size:fs*1.4,  weight:700, color:'rgba(255,255,255,.85)', at:2.2},
+      {text:'should commit itself',              size:fs*1.4,  weight:700, color:'rgba(255,255,255,.85)', at:1.7},
       {text:'to achieving the goal,',            size:fs,      weight:400, color:'rgba(255,255,255,.60)', at:3.8},
       {text:'before this decade is out,',        size:fs,      weight:400, color:'rgba(255,255,255,.60)', at:5.5},
       {text:'of landing a man on the moon',      size:fs*1.2,  weight:500, color:'rgba(255,255,255,.78)', at:7.5},
-      {text:'and returning him safely',          size:fs*1.6,  weight:700, color:'rgba(255,255,255,.90)', at:10.8},
-      {text:'to the earth.',                    size:fs*2.2,  weight:900, color:'#fff',                  at:13.5},
+      {text:'and returning him safely',          size:fs*1.6,  weight:700, color:'rgba(255,255,255,.90)', at:8.8},
+      {text:'to the earth.',                    size:fs*2.2,  weight:900, color:'#fff',                  at:9.2},
     ];
 
     const synced=layoutLines(dom,lines,{startY:.05,gapMult:1.52,lx:.05});
+    const _s8l=synced[synced.length-1];
+    const _s8sfs=_cl(W*.020,10,18);
+    const _s8spk=buildSpeaker('— J. F. KENNEDY',W*.05,parseFloat(_s8l.el.style.top)+_s8l.el.offsetHeight+6,W*.90,_s8sfs);
+    dom.appendChild(_s8spk);
+    synced.push({el:_s8spk,at:_s8l.at});
     this._cancel=audioSync(synced);
   },
   destroy(){if(this._cancel)this._cancel();}
@@ -449,7 +513,7 @@ SCENES.jfk_safely = {
      0.3s  "Welcome home, Columbia."
      2.5s  "Beautiful, beautiful."
      5.0s  "You might take a look at your G-suit..."
-     7.2s  "we're gonna dust it off first."
+     7.2s  "we’re gonna dust it off first."
 ═══════════════════════════════════════════════════════════════════ */
 SCENES.sh_dust = {
   init(dom, canvas, ptr) {
@@ -459,12 +523,17 @@ SCENES.sh_dust = {
     const fs=_cl(W*.044,22,44);
     const lines=[
       {text:'Welcome home, Columbia.',               size:fs*1.4,  weight:500, color:'rgba(255,255,255,.82)', at:0.3},
-      {text:'Beautiful, beautiful.',                 size:fs*2.2,  weight:700, color:'#fff',                  at:2.5},
-      {text:"You might take a look at your G-suit...",size:fs,     weight:300, color:'rgba(255,255,255,.55)', at:5.0},
-      {text:"we're gonna dust it off first.",        size:fs*1.8,  weight:700, color:'rgba(255,255,255,.90)', at:7.2},
+      {text:'Beautiful, beautiful.',                 size:fs*2.2,  weight:700, color:'#fff',                  at:0.9},
+      {text:"You might take a look at your G-suit...",size:fs,     weight:300, color:'rgba(255,255,255,.55)', at:3.0},
+      {text:"we’re gonna dust it off first.",        size:fs*1.8,  weight:700, color:'rgba(255,255,255,.90)', at:6.2},
     ];
 
     const synced=layoutLines(dom,lines,{startY:.10,gapMult:1.62});
+    const _s9l=synced[synced.length-1];
+    const _s9sfs=_cl(W*.020,10,18);
+    const _s9spk=buildSpeaker('— L. HOUSH (CAPCOM)',W*.05,parseFloat(_s9l.el.style.top)+_s9l.el.offsetHeight+6,W*.90,_s9sfs);
+    dom.appendChild(_s9spk);
+    synced.push({el:_s9spk,at:_s9l.at});
     this._cancel=audioSync(synced);
   },
   destroy(){if(this._cancel)this._cancel();}
@@ -487,21 +556,33 @@ SCENES.sh_sally = {
     const W=dom.offsetWidth, H=dom.offsetHeight;
 
     const fs=_cl(W*.046,22,46);
+    const speakerFs=_cl(W*.020,10,18);
     const PINK='#ff3d9a';
 
     const lineDefs=[
-      {text:'Have you ever been to Disneyland?', size:fs,      weight:400, color:'rgba(255,255,255,.65)', at:1.0, accent:['Disneyland']},
-      {text:'Affirmative.',                       size:fs*1.4,  weight:700, color:'#fff',                  at:3.2},
-      {text:'That was definitely an E-ticket.',  size:fs*1.8,  weight:700, color:'#fff',                  at:4.8, accent:['E-ticket']},
-      {text:'Roger that, Sally.',                size:fs,      weight:400, color:'rgba(255,255,255,.60)', at:6.8},
+      {text:'Have you ever been to Disneyland?', size:fs,        weight:400, color:'rgba(255,255,255,.65)', at:1.0, accent:['Disneyland']},
+      {isSpeaker:true, text:'— L. HOUSH (CAPCOM)',               size:speakerFs, at:1.0},
+      {text:'Affirmative.',                       size:fs*1.4,    weight:700, color:'#fff',                  at:7.6},
+      {isSpeaker:true, text:'— S. RIDE',                         size:speakerFs, at:7.6},
+      {text:'That was definitely an E-ticket.',  size:fs*1.8,    weight:700, color:'#fff',                  at:9.0, accent:['E-ticket']},
+      {isSpeaker:true, text:'— S. RIDE',                         size:speakerFs, at:9.0},
+      {text:'Roger that, Sally.',                size:fs,        weight:400, color:'rgba(255,255,255,.60)', at:11.9},
+      {isSpeaker:true, text:'— L. HOUSH (CAPCOM)',               size:speakerFs, at:11.9},
     ];
 
-    /* Auto-scale gap */
     const _sallyAvailH = H*0.80 - 16;
-    const _sallyTotalH = lineDefs.reduce((s,d)=>s+d.size*1.6,0);
+    const _sallyTotalH = lineDefs.reduce((s,d)=>s+(d.isSpeaker?d.size*2.5:d.size*1.6),0);
     const _sallyGap = _sallyTotalH > _sallyAvailH ? 1.6*(_sallyAvailH/_sallyTotalH) : 1.6;
     let y=H*.10;
+    let _sallyPrevEl=null;
     const synced=lineDefs.map(d=>{
+      if(d.isSpeaker){
+        const speakerY=_sallyPrevEl?parseFloat(_sallyPrevEl.style.top)+_sallyPrevEl.offsetHeight+4:y;
+        const el=buildSpeaker(d.text,W*.05,speakerY,W*0.90,d.size);
+        dom.appendChild(el);
+        y=speakerY+d.size*2.5;
+        return {el,at:d.at||0};
+      }
       const el=document.createElement('div');
       el.style.cssText=[
         'font-family:"Roboto",sans-serif',
@@ -522,6 +603,7 @@ SCENES.sh_sally = {
       dom.appendChild(el);
       const ox=W*.05,oy=y;
       setTimeout(()=>makeDraggable(el,ox,oy),(d.at||0)*1000+800);
+      _sallyPrevEl=el;
       y+=d.size*_sallyGap;
       return {el,at:d.at||0};
     });
