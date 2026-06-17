@@ -1252,7 +1252,7 @@ body.dragging * { cursor: grabbing !important; }
 /* ── Text stream: asymmetric, alternated blocks ──────────── */
 .about-stream {
   position: relative;
-  padding: 12vh 8vw 16vh;
+  padding: 12vh 8vw 4vh;
   display: flex;
   flex-direction: column;
   gap: 24vh;                         /* generous gaps so spheres bounce between blocks */
@@ -1281,6 +1281,26 @@ body.dragging * { cursor: grabbing !important; }
   font-size: clamp(16px, 1.7vw, 22px);
   line-height: 1.32;
   color: var(--c-trace);
+}
+
+.about-refs {
+  padding: 0 8vw 10vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2em;
+  max-width: 44ch;
+  font-size: clamp(16px, 1.7vw, 22px); /* ch context matches .about-block */
+}
+
+.about-refs p {
+  font-weight: 300;
+  font-size: clamp(10px, 1vw, 13px);
+  line-height: 1.5;
+  color: var(--c-trace-dim);
+}
+
+.about-refs em {
+  font-style: italic;
 }
 
 .about-foot {
